@@ -1,0 +1,6 @@
+-install 'at': 
+'sudo pacman -S at'
+-run deamon: 
+'sudo atd'
+-run script:
+at hh:mm < /absolute/path/to/script.sh
