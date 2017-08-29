@@ -1,0 +1,16 @@
+Prereqs:
+	AT & FFMPEG
+	-install 'at': 
+	'sudo pacman -S at'
+	-run deamon: 
+	'sudo atd'
+
+recordstreams.sh TIME -> records from the IP adresses listed in camIPs file. Will split the stream into 60s segments. TIME given is the wanted recording time in seconds.
+
+concat.sh -> early version of a script for concatenating the clips listed i clips directory.
+
+merger.sh -> merges the output of concat.sh into a single stacked view output video. Takes a fuckton of time. 
+
+
+To run script:
+./recordstream

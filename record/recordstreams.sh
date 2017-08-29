@@ -25,8 +25,8 @@ do
     -y -c:v copy -segment_format mpegts -t $TIME "$PWD/clips/$SUF-$IP-%05d.ts"" &
 done
 
-at now minutes <<< "ffmpeg -thread_queue_size 512 -f alsa -i hw:1 -f segment -segment_time $SEGTIME \
-  -y -acodec copy -t $TIME "$PWD/clips/$SUF-audio.wav"" &
+at now +1 minutes <<< "ffmpeg -thread_queue_size 512 -f alsa -i hw:1 -f segment -segment_time $SEGTIME \
+  -y -acodec copy -t $TIME "$PWD/clips/$SUF-audio-%05d.wav"" &
 
 wait
 
