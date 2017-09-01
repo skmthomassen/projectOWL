@@ -6,7 +6,7 @@ if [ $# -ne 1 ] ; then
 fi
 
 TIME=$1
-SEGTIME="60"
+SEGTIME="5"
 REMAINDER=$((60 - $(date +%S) ))
 SNOOZE="$((REMAINDER+$TIME))"
 NOW=$(date +"%m%d_%H%M")
@@ -25,13 +25,14 @@ do
     -y -c:v copy -segment_format mpegts -t $TIME "$PWD/clips/$SUF-$IP-%05d.ts"" &
 done
 
-at now +1 minutes <<< "ffmpeg -thread_queue_size 512 -f alsa -i hw:1 -f segment -segment_time $SEGTIME \
-  -y -acodec copy -t $TIME "$PWD/clips/$SUF-audio-%05d.wav"" &
+at now +1 minutes <<< "ffmpeg -thread_queue_size 512 -f alsa -i hw:1 -y \
+  -f segment -segment_time $SEGTIME -segment_format flac -acodec flac \
+  -t $TIME "$PWD/clips/$SUF-audio-%05d.flac"" &
 
 wait
 
-END=$(date +%s)
-TOTALTIME=$(expr $END - $BEGIN)
-echo "Total time of execution: " $TOTALTIME"s || "$(($TOTALTIME/60))"m || "$(($TOTALTIME/3600))"h"
+#END=$(date +%s)
+#TOTALTIME=$(expr $END - $BEGIN)
+#echo "Total time of execution: " $TOTALTIME"s || "$(($TOTALTIME/60))"m || "$(($TOTALTIME/3600))"h"
 
 exit 0
