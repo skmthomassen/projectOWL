@@ -26,8 +26,8 @@ do
 done
 
 at now +1 minutes <<< "ffmpeg -thread_queue_size 512 -f alsa -i hw:1 -y \
-  -f segment -segment_time $SEGTIME -segment_format flac -acodec flac \
-  -t $TIME "$PWD/clips/$SUF-audio-%05d.flac"" &
+  -f segment -segment_time $SEGTIME -segment_format aac -acodec aac \
+  -t $TIME "$PWD/clips/$SUF-audio-%05d.aac"" &
 
 wait
 
