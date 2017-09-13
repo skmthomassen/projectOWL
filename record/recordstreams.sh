@@ -19,22 +19,25 @@ AUDIOUP=1
 SUF=$(head -n 1 $PWD/suffix)
 SUF=$(( $SUF + 1 ))
 echo $SUF > $PWD/suffix
+echo "---Starting recording job no: $SUF---"
 
 #Testing for devices
 if ping -c 1 $IP2 &> /dev/null ; then
-  let IP2UP=$IP2UP-1
+  IP2UP=$((IP2UP-1))
 else echo "No camera at IP:$IP2 was found"
 fi
 if ping -c 1 $IP3 &> /dev/null ; then
-  let IP3UP=$IP3UP-1
+  IP3UP=$((IP3UP-1))
 else echo "No camera at IP:$IP3 was found"
 fi
 if [ "$IP2UP" -eq 1 ] && [ "$IP3UP" -eq 1 ] ; then
   echo "ERROR: No cameras where found"
+  echo "No reason to live... Will exit..."
   exit 10
 fi
 
 echo "Will record for:" $(($1/86400))" days "$(date -d "1970-01-01 + $1 seconds" "+%H hours %M minutes %S seconds")
+echo
 
 parallel --progress --verbose --joblog $PWD/logs/$SUF.log ::: \
 "ffmpeg -hide_banner -thread_queue_size 512 -rtsp_transport tcp -i rtsp://$IP2/av0_0 -f segment \
