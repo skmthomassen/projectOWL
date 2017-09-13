@@ -41,9 +41,9 @@ echo
 
 parallel --progress --verbose --joblog $PWD/logs/$SUF.log ::: \
 "ffmpeg -hide_banner -thread_queue_size 512 -rtsp_transport tcp -i rtsp://$IP2/av0_0 -f segment \
-  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts -t 15 "$PWD/clips/$SUF-202-%03d.ts"" \
+  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts -t $TIME "$PWD/clips/$SUF-202-%03d.ts"" \
 "ffmpeg -hide_banner -thread_queue_size 512 -rtsp_transport tcp -i rtsp://$IP3/av0_0 -f segment \
-  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts -t 15 "$PWD/clips/$SUF-203-%03d.ts"" \
+  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts -t $TIME "$PWD/clips/$SUF-203-%03d.ts"" \
 "ffmpeg -hide_banner -thread_queue_size 512 -f alsa -i hw:1 -y -f segment \
   -segment_time $SEGTIME -segment_format aac -acodec aac -t $TIME "$PWD/clips/$SUF-audio-%03d.aac""
 
