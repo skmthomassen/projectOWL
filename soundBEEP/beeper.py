@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
 from pygame import mixer # Load the required library
-import os
 import time
 
 #
 #LOADING THE SOUND THING
 #
-cwd = os.getcwd()
 mixer.init()
-#mixer.music.load('cwd/beep.mp3')
-mixer.music.load('/home/kim/projectOWL/soundBEEP/beep005.mp3')
+mixer.music.load('beep005.mp3')
 
 #
 #OTHER LOOP TRY
