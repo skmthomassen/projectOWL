@@ -8,7 +8,6 @@ import os
 #
 #LOADING THE SOUND THING
 #
-
 filetoplay = os.getcwd() + "/beep005.mp3"
 print (filetoplay)
 
@@ -20,7 +19,7 @@ def play(audio_file):
 #
 interval = 60
 starttime=time.time()
-print ("Starting beep job...")
+#print ("Starting beep job...")
 count = 0
 while True:
   if count == 11:
