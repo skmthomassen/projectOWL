@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 from pygame import mixer # Load the required library
-import time
 import subprocess
+import time
 import os
 
 #
