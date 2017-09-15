@@ -26,10 +26,10 @@ while True:
     count = 0
   repeat = 0
   while repeat < count:
-      #print ("repeat...", repeat)
+      print ("repeat...", repeat)
       play(filetoplay)
       repeat += 1
-  #print ("count...", count)
+  print ("count...", count)
   time.sleep(interval - ((time.time() - starttime) % interval))
   count += 1
 #
