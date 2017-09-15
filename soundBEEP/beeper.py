@@ -18,7 +18,7 @@ def play(audio_file):
 #
 #OTHER LOOP TRY
 #
-interval = 5
+interval = 60
 starttime=time.time()
 print ("Starting beep job...")
 count = 0
@@ -27,7 +27,7 @@ while True:
     count = 0
   repeat = 0
   while repeat < count:
-      print ("repeat...", repeat)
+      #print ("repeat...", repeat)
       play(filetoplay)
       repeat += 1
   print ("count...", count)
