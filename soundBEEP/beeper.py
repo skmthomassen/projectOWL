@@ -1,15 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from pygame import mixer # Load the required library
 import time
 import subprocess
+import os
 
 #
 #LOADING THE SOUND THING
 #
-#mixer.init()
-#mixer.music.load('beep005.mp3')
-filetoplay = '/home/kim/projectOWL/soundBEEP/beep005.mp3'
+
+filetoplay = os.getcwd() + "/beep005.mp3"
+print (filetoplay)
 
 def play(audio_file):
     subprocess.call(["ffplay", "-hide_banner", "-loglevel", "-8", "-nodisp", "-autoexit", filetoplay])
@@ -17,7 +18,7 @@ def play(audio_file):
 #
 #OTHER LOOP TRY
 #
-interval = 10
+interval = 5
 starttime=time.time()
 print ("Starting beep job...")
 count = 0
