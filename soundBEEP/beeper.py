@@ -17,7 +17,7 @@ starttime=time.time()
 print ("Starting beep job...")
 count = 0
 while True:
-  #mixer.music.play()
+  mixer.music.play()
   print ("beep...", count)
   time.sleep(n - ((time.time() - starttime) % n))
   count += 1
