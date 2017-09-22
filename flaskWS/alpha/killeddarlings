@@ -1,0 +1,55 @@
+ #def startRecording():
+    #cmdREC = subprocess.Popen(['sh', 'recordstreams.sh'], stdout=subprocess.PIPE)
+    #print("cmd returnCode", cmdREC.poll())
+    #out = cmdREC.communicate()[0]
+    #pid = cmdREC.poll()
+    #print("PID:", pid)
+    #return cmdREC
+
+    # os.kill(recPID, signal.SIGTERM) #or signal.SIGKILL
+    # try:
+    #     os.kill(recPID, 0)
+    # except OSError:
+    #     return False
+    # else:
+    #     return True
+
+        #print ("tick")
+        #now = time.time()
+        #for f in os.listdir(thumbs):
+            #if os.stat(os.path.join(thumbs, f)).st_mtime < now - 3600: #1day->86400
+            # Determines how old the images gets to be before they get deleted
+                #os.remove(os.path.join(thumbs, f))
+        #timestamp = '{:%Y-%m-%d_%H:%M:%S}'.format(datetime.datetime.now())
+
+#Making the thumbs directory if it doesn't exist
+try:
+    os.makedirs(thumbs)
+except OSError as e:
+    if e.errno != errno.EEXIST:
+        raise
+
+<button type="button" onclick="disableButton(this)" name="enable">Enable</button>
+
+    <button type="button" onclick="alert('hej');">Click Me!</button>
+    <button type="button" id="minfineknap">minfineknap</button>
+    <button type="button" onclick="disableButton(this)" name="enable">Enable</button>
+
+
+document.getElementById("minfineknap").onclick = function(){
+      //alert("Nogen har trykket");
+      var request = $.ajax(
+        {
+            url: "minfineknap",
+            type: "GET",
+            dataType: "html"
+        });
+        request.done(function(msg) {
+            alert(msg);
+        });
+
+        request.fail(function(jqXHR, textStatus)
+        {
+            alert( "Request failed: " + textStatus );
+        });
+    };

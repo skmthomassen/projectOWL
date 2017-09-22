@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block javascript %}
+  $(document).ready(function() {
+
+    setInterval(function(){
+      console.log("update image");
+      document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
+      document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
+    }, 5000);
+
+    document.getElementById("minfineknap").onclick = function(){
+      var request = $.ajax({
+
+            url:'/home/kim/projectOWL/flaskWS/alpha/./controller.py'
+        });
+        request.done(function(msg) {
+            alert(msg);
+        });
+        request.fail(function(jqXHR, textStatus){
+            alert( "Request failed: " + textStatus );
+        });
+    };
+  });
+{% endblock %}
+
+{% block content %}
+<div id="imagesMain">
+    <img id="L" src="{{ url_for('static',filename="thumbs/202left.png" )}}">
+    <img id="R" src="{{ url_for('static',filename="thumbs/203right.png" )}}">
+</div>
+<div>
+    <button class="button active" id="minfineknap">Enable</button>
+    <button class="button active">start recording</button>
+    <button class="button disabled">stop recording</button>
+</div>
+{% endblock %}
