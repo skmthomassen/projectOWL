@@ -6,6 +6,14 @@ CWD = os.getcwd()
 
 app = Flask(__name__) #static_folder="/home/kim/projectOWL/flaskWS/alpha/static"
 
+@app.before_first_request
+def setup_page():
+    cmdTHUMBS = subprocess.Popen([ 'sh', 'captureThumbs.sh'], stdout=subprocess.PIPE)
+    thumbsPID = cmdTHUMBS.pid
+    fileThumb = open('PIDthumbs','w')
+    fileThumb.write( str(thumbsPID) )
+    fileThumb.close()
+
 @app.route('/')
 @app.route('/home')
 def home():
