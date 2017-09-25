@@ -2,25 +2,26 @@
 
 {% block javascript %}
   $(document).ready(function() {
-
     setInterval(function(){
       console.log("update image");
       document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
       document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
-    }, 5000);
+    }, 1000);
 
-    document.getElementById("minfineknap").onclick = function(){
-      var request = $.ajax({
+    document.getElementById('startBut').onclick = function (event) {
+      var startButton = this,
+          stopButton = document.getElementById('stopBut');
 
-            url:'/home/kim/projectOWL/flaskWS/alpha/./controller.py'
-        });
-        request.done(function(msg) {
-            alert(msg);
-        });
-        request.fail(function(jqXHR, textStatus){
-            alert( "Request failed: " + textStatus );
-        });
-    };
+      fetch('/run_script').then(function (response) {
+        if (response.ok) {
+          startButton.classList.remove('active');
+          startButton.classList.add('disabled');
+
+          stopButton.classList.add('active');
+          stopButton.classList.remove('disabled');
+        }
+      })
+    }
   });
 {% endblock %}
 
@@ -29,9 +30,10 @@
     <img id="L" src="{{ url_for('static',filename="thumbs/202left.png" )}}">
     <img id="R" src="{{ url_for('static',filename="thumbs/203right.png" )}}">
 </div>
-<div>
-    <button class="button active" id="minfineknap">Enable</button>
-    <button class="button active">start recording</button>
-    <button class="button disabled">stop recording</button>
+<div align="center">
+      <button class="button active" id="startBut">start recording</button>
+      <button class="button disabled" id="stopBut">stop recording</button>
+      <p><button class="button active" id="minfineknap">Enable</button></p>
 </div>
+
 {% endblock %}

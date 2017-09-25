@@ -18,7 +18,7 @@ def captureThumb ( ip, ali ):
     subprocess.call(cmd)
 
 def doRepeat():
-    interval = 5 #The amount of seconds elapsing between capturing a still
+    interval = 1 #The amount of seconds elapsing between capturing a still
     starttime=time.time()
     while True:
         captureThumb( "202", "left" )

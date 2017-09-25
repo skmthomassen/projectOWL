@@ -53,3 +53,24 @@ document.getElementById("minfineknap").onclick = function(){
             alert( "Request failed: " + textStatus );
         });
     };
+
+
+
+
+
+    document.getElementById("minfineknap").onclick = function(){
+      $.ajax({
+
+          url: "/home/kim/projectOWL/flaskWS/alpha/controller.py"
+          success: function(response) {
+            // here you do whatever you want with the response variable
+         },
+         error: function(request, status, error) {
+           alert( "Request failed: " + textStatus );
+         }
+      });
+    };
+
+
+
+
