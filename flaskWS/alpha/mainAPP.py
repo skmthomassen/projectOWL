@@ -1,10 +1,10 @@
 from flask import Flask, render_template
 import controller
-import subprocess
+import os, subprocess
 
-app = Flask(__name__, static_folder="/home/kim/projectOWL/flaskWS/alpha/static") #
+CWD = os.getcwd()
 
-background_scripts = {}
+app = Flask(__name__) #static_folder="/home/kim/projectOWL/flaskWS/alpha/static"
 
 @app.route('/')
 @app.route('/home')
@@ -17,7 +17,7 @@ def dragons():
 
 @app.route('/run_script')
 def run_script():
-    subprocess.call(["/home/kim/projectOWL/flaskWS/alpha/controller.py"])
+    subprocess.call([CWD + "/controller.py"]) #/home/kim/projectOWL/flaskWS/alpha/
     return 'ok'
 
 
