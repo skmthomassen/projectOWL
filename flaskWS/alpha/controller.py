@@ -4,6 +4,9 @@ import thumbsCapture
 import subprocess
 from subprocess import Popen
 import os, signal, time
+import argparse
+
+parser = argparse.ArgumentParser(description='Controlling the background processes of the ProjectOWLs little web server')
 
 #Testing if cameras are available at given ip address
 def isCamerasAvailable():
@@ -18,25 +21,66 @@ def isCamerasAvailable():
         print("One or both cameras are unreachable")
     return b
 
-def doThumbsCapture():
+def doCaptureThumbs():
     if isCamerasAvailable():
-        #thumbsCapture.doRepeat()
         cmdTHUMBS = subprocess.Popen([ 'sh', 'captureThumbs.sh'], stdout=subprocess.PIPE)
         thumbsPID = cmdTHUMBS.pid
-        print("thumbsPID: " +  str(thumbsPID))
-        return thumbsPID
+        fileThumb = open('PIDthumbs','w')
+        fileThumb.write( str(thumbsPID) )
+        fileThumb.close()
 
-def doStopRecording( recObj ):
-    recObj.terminate
+def doStopCaptureThumbs():
+    fileThumbs = open('PIDthumbs','r')
+    thumbsPID = fileThumbs.readline()
+    os.kill(int(thumbsPID), signal.SIGTERM)
 
 def doStartRecording():
     if isCamerasAvailable():
-        cmdREC = subprocess.Popen(['sh', 'recordstreams.sh'], stdout=subprocess.PIPE)
-        return cmdREC
+        cmdREC = subprocess.Popen(['sh', 'recordstreams.sh'], stdout=subprocess.PIPE, preexec_fn=os.setsid)
+        recsPID = cmdREC.pid
+        fileRec = open('PIDrecording','w')
+        fileRec.write( str(recsPID) )
+        fileRec.close()
+
+def doStopRecording():
+    fileRec = open('PIDrecording','r')
+    recPID = fileRec.readline()
+    os.killpg(int(recPID), signal.SIGTERM)
+    time.sleep( 1 ) #Needs 2 SIGTERMS due to the way GNU parallel is constructed
+    os.killpg(int(recPID), signal.SIGTERM)
+    #os.kill(int(recPID), signal.SIGTERM)
 
 
 if __name__ == "__main__":
-    doThumbsCapture()
-    #recObj = doStartRecording()
-    #doStartRecording()
-    #doStopRecording( recObj )
+    fileThumbs = open('PIDthumbs','r')
+    thumbsPID = fileThumbs.readline()
+    tx = os.path.isdir("/proc/" + thumbsPID)
+    #print (tx)
+    if not tx:
+        doCaptureThumbs()
+    #doStopCaptureThumbs()
+
+    fileRec = open('PIDrecording','r')
+    recPID = fileRec.readline()
+    rx = os.path.isdir("/proc/" + recPID)
+    if rx:
+        doStopRecording()
+    else:
+        doStartRecording()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###

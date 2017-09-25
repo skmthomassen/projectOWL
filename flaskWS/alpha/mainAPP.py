@@ -18,7 +18,6 @@ def dragons():
 @app.route('/run_script')
 def run_script():
     subprocess.call(["/home/kim/projectOWL/flaskWS/alpha/controller.py"])
-
     return 'ok'
 
 
