@@ -20,7 +20,11 @@ def isCamerasAvailable():
 
 def doThumbsCapture():
     if isCamerasAvailable():
-        thumbsCapture.doRepeat()
+        #thumbsCapture.doRepeat()
+        cmdTHUMBS = subprocess.Popen([ 'sh', 'captureThumbs.sh'], stdout=subprocess.PIPE)
+        thumbsPID = cmdTHUMBS.pid
+        print("thumbsPID: " +  str(thumbsPID))
+        return thumbsPID
 
 def doStopRecording( recObj ):
     recObj.terminate
