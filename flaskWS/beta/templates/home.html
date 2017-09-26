@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block javascript %}
+  $(document).ready(function() {
+    setInterval(function(){
+      console.log("update image");
+      document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
+      document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
+    }, 3000);
+
+    document.getElementById('startBut').onclick = function (event) {
+      var startButton = this,
+          stopButton = document.getElementById('stopBut');
+      fetch('/run_script').then(function (response) {
+        if (response.ok) {
+          startButton.classList.remove('active');
+          startButton.classList.add('disabled');
+
+          stopButton.classList.add('active');
+          stopButton.classList.remove('disabled');
+        }
+      })
+    }
+    document.getElementById('stopBut').onclick = function (event) {
+      var stopButton = this,
+          startButton = document.getElementById('startBut');
+      fetch('/run_script').then(function (response) {
+        if (response.ok) {
+          stopButton.classList.remove('active');
+          stopButton.classList.add('disabled');
+
+          startButton.classList.add('active');
+          startButton.classList.remove('disabled');
+        }
+      })
+    }
+  });
+{% endblock %}
+
+{% block content %}
+<div id="imagesMain">
+    <img id="L" src="{{ url_for('static',filename="thumbs/202left.png" )}}">
+    <img id="R" src="{{ url_for('static',filename="thumbs/203right.png" )}}">
+</div>
+<div align="center">
+      <button class="button active" id="startBut">start recording</button>
+      <button class="button disabled" id="stopBut">stop recording</button>
+</div>
+
+{% endblock %}
