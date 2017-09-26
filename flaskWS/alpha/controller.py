@@ -52,12 +52,12 @@ def doStopRecording():
 
 
 if __name__ == "__main__":
-    fileThumbs = open('PIDthumbs','r')
-    thumbsPID = fileThumbs.readline()
-    tx = os.path.isdir("/proc/" + thumbsPID)
+    #fileThumbs = open('PIDthumbs','r')
+    #thumbsPID = fileThumbs.readline()
+    #tx = os.path.isdir("/proc/" + thumbsPID)
     #print (tx)
-    if not tx:
-        doCaptureThumbs()
+    #if not tx:
+    #    doCaptureThumbs()
     #doStopCaptureThumbs()
 
     fileRec = open('PIDrecording','r')
