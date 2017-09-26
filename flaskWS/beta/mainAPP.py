@@ -11,6 +11,10 @@ def setup_page():
     fileThumb.write( str(thumbsPID) )
     fileThumb.close()
 
+# @app.teardown_appcontext( 'teardown' )
+# def teardown():
+#     subprocess.call(['static/controlstreams.py'])
+
 @app.route('/')
 @app.route('/home')
 def home():
