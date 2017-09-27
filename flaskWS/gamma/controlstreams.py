@@ -39,12 +39,12 @@ def start_recording():
         fileRec.write( str(recsPID) )
         fileRec.close()
     except IOError:
-        print("File PIDrecording couldn't be opened.")
+        print("File PIDrecording couldn't be opened.1")
     try:
         fileRec = open('PIDrecording','r')
         recPID = fileRec.readline()
     except IOError:
-        print("File PIDrecording couldn't be opened.")
+        print("File PIDrecording couldn't be opened.2")
     if os.path.isdir("/proc/" + recPID):
         return True
 
@@ -53,12 +53,20 @@ def stop_recording():
     try:
         fileRec = open('PIDrecording','r')
         recPID = fileRec.readline()
-        os.killpg(int(recPID), signal.SIGTERM)
-        time.sleep( 1 ) #Needs 2 SIGTERMS due to the way GNU parallel is constructed
-        os.killpg(int(recPID), signal.SIGTERM)
         fileRec.close()
     except IOError:
-        print("File PIDrecording couldn't be opened.")
+        print("File PIDrecording couldn't be opened.3")
+    os.killpg(int(recPID), signal.SIGTERM)
+    time.sleep( 1 ) #Needs 2 SIGTERMS due to the way GNU parallel is constructed
+    os.killpg(int(recPID), signal.SIGTERM)
+    try:
+        fileRec = open('PIDrecording','r')
+        recPID = fileRec.readline()
+    except IOError:
+        print("File PIDrecording couldn't be opened.4")
+    if os.path.isdir("/proc/" + recPID):
+        return False
+    return True
 
 #Either start or stop a recording, depending on whether a PID exists
 def toggle_record():
@@ -72,7 +80,7 @@ def toggle_record():
         else:
             start_recording()
     except IOError:
-        print("File PIDrecording couldn't be opened.")
+        print("File PIDrecording couldn't be opened.5")
 
 #if __name__ == "__main__":
     #toggle_record()

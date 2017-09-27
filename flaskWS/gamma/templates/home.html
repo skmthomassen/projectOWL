@@ -6,16 +6,19 @@
       console.log("update image");
       document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
       document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
+      fetch('/state').then(function (response) {
+        response.status
+        return response.text()
+      })
     }, 3000);
 
     document.getElementById('startBut').onclick = function (event) {
       var startButton = this,
           stopButton = document.getElementById('stopBut');
-      fetch('/start').then(function (response) {
+      fetch('/start_rec').then(function (response) {
         if (response.ok) {
           startButton.classList.remove('active');
           startButton.classList.add('disabled');
-
           stopButton.classList.add('active');
           stopButton.classList.remove('disabled');
         }
@@ -24,11 +27,10 @@
     document.getElementById('stopBut').onclick = function (event) {
       var stopButton = this,
           startButton = document.getElementById('startBut');
-      fetch('/stop').then(function (response) {
+      fetch('/stop_rec').then(function (response) {
         if (response.ok) {
           stopButton.classList.remove('active');
           stopButton.classList.add('disabled');
-
           startButton.classList.add('active');
           startButton.classList.remove('disabled');
         }
