@@ -1,3 +1,4 @@
+from static.controlstreams import toggle_record
 from flask import Flask, render_template
 import os, subprocess
 
@@ -26,7 +27,10 @@ def dragons():
 
 @app.route('/run_script')
 def run_script():
-    subprocess.call(['static/controlstreams.py'])
+    try:
+        toggle_record()
+    except IOError as e:
+        return ''
     return 'ok'
 
 if __name__ == "__main__":

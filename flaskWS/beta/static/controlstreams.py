@@ -32,7 +32,9 @@ def doStopRecording():
     time.sleep( 1 ) #Needs 2 SIGTERMS due to the way GNU parallel is constructed
     os.killpg(int(recPID), signal.SIGTERM)
 
-if __name__ == "__main__":
+
+def toggle_record():
+    raise IOError('asssssssss')
     fileRec = open('static/PIDrecording','r')
     recPID = fileRec.readline()
     rx = os.path.isdir("/proc/" + recPID)
@@ -40,3 +42,6 @@ if __name__ == "__main__":
         doStopRecording()
     else:
         doStartRecording()
+
+if __name__ == "__main__":
+    toggle_record()
