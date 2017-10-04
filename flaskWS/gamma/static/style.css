@@ -42,7 +42,8 @@ a {
 }
 footer {
   background: lightcoral;
-  padding: 1em;
+  padding-top: 5em;
+  padding-bottom: .01em;
   text-align: center;
   color: white;
 }
@@ -113,3 +114,44 @@ div {
     float: right;
   }
 }
+@media (max-height: 550px) {
+  header{
+    padding: .30em;
+  }
+  footer{
+    padding-top: .01em;
+  }
+  #imagesMain img{
+    width: 38%;
+    vertical-align: middle;
+  }
+
+}    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

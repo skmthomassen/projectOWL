@@ -1,12 +1,9 @@
-from flask import Flask, render_template, url_for, redirect
-from controlstreams import capture_thumbnails, start_recording, stop_recording
+from flask import Flask, render_template, url_for, redirect, Response
+from controlstreams import capture_thumbnails, is_recording, start_recording, stop_recording
+from controlstreams import ACTIVE, IDLE, RECORDING_STATE
 import os, subprocess
 
 app = Flask(__name__)
-
-IDLE = "idle"
-ACTIVE = "active"
-RECORDING_STATE = IDLE
 
 @app.before_first_request
 def setup_page():
@@ -24,43 +21,44 @@ def home():
 def dragons():
    return render_template('dragons.html')
 
-@app.route('/run_script')
-def run_script():
-    try:
-        toggle_record()
-    except IOError as e:
-        return 'Nope'
-    return 'ok'
-
 @app.route('/state')
 def state():
-    print("--RECORDING_STATE: " + RECORDING_STATE)
-    if RECORDING_STATE is ACTIVE:
-        print("-----------STATE-ACTIVE")
-        return redirect( url_for('start_rec') )
-    elif RECORDING_STATE is IDLE:
-        print("-----------STATE-IDLE")
-        return redirect( url_for('stop_rec') )
+	red = is_recording()
+	print("---READSTATE - " + str(red) )
+	if red:
+		print("-----STATE-ACTIVE---")
+		return '200'
+	print("-----STATE-IDLE---")
+	return '202'
+
+#@app.route('/state')
+#def state():
+	#red = is_recording()
+	#print("---READSTATE - " + str(red) )
+	#if red:
+		#print("-----STATE-ACTIVE---")
+		#return Response('active', mimetype='text/plain')
+	#elif not red:
+		#print("-----STATE-IDLE---")
+		#return Response('idle', mimetype='text/plain')
+	#return 'ok'
 
 @app.route('/start_rec')
 def start_rec():
-    print("----------- ACTIVE")
+    print("--ACTIVATING RECORDING--")
     try:
-        if start_recording():
-            print("RECORDING_STATE = ACTIVE")
-            RECORDING_STATE = ACTIVE
+        start_recording()
     except IOError as e:
-        return 'Nope'
-    return 'ok'
+        return '500'
+    return '200'
 
 @app.route('/stop_rec')
 def stop_rec():
     try:
-        if stop_recording():
-            RECORDING_STATE = IDLE
+        stop_recording()
     except IOError as e:
-        return 'Nope'
-    return 'ok'
+        return '500'
+    return '200'
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
