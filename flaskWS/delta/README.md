@@ -7,8 +7,9 @@ TODO; the ability to download said video should be added.
 Start by running the mainAPP.py script.
 
 Prerequisits:
-python3
-flask
-GNU Parallel
-FFMPEG
-Two IP cameras at IP address: 192.169.0.202 & 192.169.0.203
+-python3
+-flask
+-psutil
+-GNU Parallel
+-FFMPEG
+-Two IP cameras at IP address: 192.169.0.202 & 192.169.0.203

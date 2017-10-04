@@ -40,8 +40,8 @@
       var startButton = this,
           stopButton = document.getElementById('stopBut');
       fetch('/state').then(function (response) {
-          //startButton.disabled = true;
-          //stopButton.disabled = false;
+          startButton.disabled = true;
+          stopButton.disabled = false;
           startButton.classList.remove('active');
           startButton.classList.add('disabled');
           stopButton.classList.add('active');
@@ -54,8 +54,8 @@
       var stopButton = this,
           startButton = document.getElementById('startBut');
       fetch('/stop_rec').then(function (response) {
-          //startButton.disabled = false;
-          //stopButton.disabled = true;
+          startButton.disabled = false;
+          stopButton.disabled = true;
           stopButton.classList.remove('active');
           stopButton.classList.add('disabled');
           startButton.classList.add('active');
@@ -67,8 +67,8 @@
 
 {% block content %}
 <div id="imagesMain">
-    <img id="L" src="{{ url_for('static',filename="thumbs/202left.png" )}}">
-    <img id="R" src="{{ url_for('static',filename="thumbs/203right.png" )}}">
+    <img id="L" src="{{ url_for('static', filename="thumbs/202left.png" )}}">
+    <img id="R" src="{{ url_for('static', filename="thumbs/203right.png" )}}">
 </div>
 <div align="center">
       <button class="button disabled" id="startBut">start recording</button>

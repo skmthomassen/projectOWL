@@ -2,10 +2,6 @@
 
 import os, signal, time, subprocess, psutil
 
-IDLE = "idle"
-ACTIVE = "active"
-RECORDING_STATE = IDLE
-
 def capture_thumbnails():
     try:
         fileThumb = open('PIDthumbs','r')
