@@ -8,40 +8,34 @@
       document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
       fetch('/state').then(function (response) {
         //console.log(response.text());
-        if (response.active){
-            console.log(ACTIVE);
-            //document.getElementById('startBut').disabled = true;
-            //document.getElementById('stopBut').disabled = false;
-            document.getElementById('startBut').classList.remove('active');
-            document.getElementById('startBut').classList.add('disabled');
-            document.getElementById('stopBut').classList.remove('disabled');
-            document.getElementById('stopBut').classList.add('active');
-        } else if (response.idle){
-            console.log("IDLE");
-            //document.getElementById('startBut').disabled = false;
-            //document.getElementById('stopBut').disabled = true;
-            document.getElementById('stopBut').classList.remove('disabled');
-            document.getElementById('stopBut').classList.add('active');
-            document.getElementById('startBut').classList.remove('active');
-            document.getElementById('startBut').classList.add('disabled');
+        if (response.ok){
+			response.text().then(function (text) {
+				console.log("case: ", text);
+				switch(text) {
+					case 'active':
+					    document.getElementById('startBut').disabled = true;
+						document.getElementById('stopBut').disabled = false;
+						document.getElementById('stopBut').classList.remove('disabled');
+						document.getElementById('stopBut').classList.add('active');
+						document.getElementById('startBut').classList.remove('active');
+						document.getElementById('startBut').classList.add('disabled');
+					break;
+					case 'idle':
+						document.getElementById('startBut').disabled = false;
+						document.getElementById('stopBut').disabled = true;
+						document.getElementById('startBut').classList.remove('disabled');
+						document.getElementById('startBut').classList.add('active');
+						document.getElementById('stopBut').classList.remove('active');
+						document.getElementById('stopBut').classList.add('disabled');
+					break;
+				}
+			});
+        } else {
+            console.log("Some error: ", text);
             }
-        return response.text()
       })
     }, 3000);
-/*
-    document.getElementById('startBut').onclick = function (event) {
-      var startButton = this,
-          stopButton = document.getElementById('stopBut');
-      fetch('/start_rec').then(function (response) {
-        if (response.ok) {
-          startButton.classList.remove('active');
-          startButton.classList.add('disabled');
-          stopButton.classList.add('active');
-          stopButton.classList.remove('disabled');
-        }
-      })
-    }
-*/
+
     document.getElementById('startBut').onclick = function (event) {
       var startButton = this,
           stopButton = document.getElementById('stopBut');
@@ -77,7 +71,7 @@
     <img id="R" src="{{ url_for('static',filename="thumbs/203right.png" )}}">
 </div>
 <div align="center">
-      <button class="button active" id="startBut">start recording</button>
+      <button class="button disabled" id="startBut">start recording</button>
       <button class="button disabled" id="stopBut">stop recording</button>
 </div>
 

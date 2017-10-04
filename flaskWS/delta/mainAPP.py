@@ -27,21 +27,9 @@ def state():
 	print("---READSTATE - " + str(red) )
 	if red:
 		print("-----STATE-ACTIVE---")
-		return '200'
+		return 'active'
 	print("-----STATE-IDLE---")
-	return '202'
-
-#@app.route('/state')
-#def state():
-	#red = is_recording()
-	#print("---READSTATE - " + str(red) )
-	#if red:
-		#print("-----STATE-ACTIVE---")
-		#return Response('active', mimetype='text/plain')
-	#elif not red:
-		#print("-----STATE-IDLE---")
-		#return Response('idle', mimetype='text/plain')
-	#return 'ok'
+	return 'idle'
 
 @app.route('/start_rec')
 def start_rec():
@@ -50,7 +38,7 @@ def start_rec():
         start_recording()
     except IOError as e:
         return '500'
-    return '200'
+    return 'ok'
 
 @app.route('/stop_rec')
 def stop_rec():
@@ -58,7 +46,7 @@ def stop_rec():
         stop_recording()
     except IOError as e:
         return '500'
-    return '200'
+    return 'ok'
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
