@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, signal, time, subprocess
+import os, signal, time, subprocess, psutil
 
 IDLE = "idle"
 ACTIVE = "active"
@@ -31,13 +31,10 @@ def is_recording():
 		fileRec.close()
 	except IOError:
 		print("File PIDrecording couldn't be opened.42")
-	pr = os.path.isdir("/proc/" + recPID)
-	print("PID of rec: " + str(recPID) )
-	print("PR: " + str(pr) )
-	if pr:
+	pid = int(recPID)
+	if psutil.pid_exists(pid):
 		return True
-	elif not pr:
-		return False
+	return False
 
 #Starting the recording script, saves its PID to a file
 def start_recording():
@@ -66,24 +63,24 @@ def start_recording():
 
 #Stop recording by PID
 def stop_recording():
-    try:
-        fileRec = open('PIDrecording','r')
-        recPID = fileRec.readline()
-        fileRec.close()
-    except IOError:
-        print("File PIDrecording couldn't be opened.3")
-    os.killpg(int(recPID), signal.SIGTERM)
-    time.sleep( 1 ) #Needs 2 SIGTERMS due to the way GNU parallel is constructed
-    os.killpg(int(recPID), signal.SIGTERM)
-    try:
-        fileRec = open('PIDrecording','r')
-        recPID = fileRec.readline()
-    except IOError:
-        print("File PIDrecording couldn't be opened.4")
-    if os.path.isdir("/proc/" + recPID):
-        return False
-    return True
-
+	try:
+		fileRec = open('PIDrecording','r')
+		recPID = fileRec.readline()
+		fileRec.close()
+	except IOError:
+		print("File PIDrecording couldn't be opened.3")
+	pid = int(recPID)
+	if psutil.pid_exists(pid):
+		recProc = psutil.Process(pid)
+		childProc = recProc.children()
+		for p in childProc:
+			p.terminate()
+			time.sleep(1)
+			p.terminate()
+			p.wait()
+		recProc.terminate()
+		recProc.wait()
+	
 #Either start or stop a recording, depending on whether a PID exists
 def toggle_record():
     try:
