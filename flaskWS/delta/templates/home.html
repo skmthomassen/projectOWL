@@ -28,6 +28,14 @@
 						document.getElementById('stopBut').classList.remove('active');
 						document.getElementById('stopBut').classList.add('disabled');
 					break;
+					//case 'unreachable':
+					//	document.getElementById('startBut').disabled = true;
+					//	document.getElementById('stopBut').disabled = true;
+					//	document.getElementById('startBut').classList.remove('active');
+					//	document.getElementById('startBut').classList.add('disabled');
+					//	document.getElementById('stopBut').classList.remove('active');
+					//	document.getElementById('stopBut').classList.add('disabled');
+					//break;
 				}
 			});
         } else {
@@ -36,6 +44,25 @@
       })
     }, 3000);
 
+        var Clock = {
+		totalSeconds: 0,
+		
+		start: function () {
+			var self = this;
+			this.interval = setInterval(function () {
+			self.totalSeconds += 1;
+			$("#hour").text(Math.floor(self.totalSeconds / 3600));
+			$("#min").text(Math.floor(self.totalSeconds / 60 % 60));
+			$("#sec").text(parseInt(self.totalSeconds % 60));
+			}, 1000);
+		},
+		
+		stop: function () {
+			clearInterval(this.interval);
+			delete this.interval;
+		},
+	};
+	
     document.getElementById('startBut').onclick = function (event) {
       var startButton = this,
           stopButton = document.getElementById('stopBut');
@@ -47,7 +74,8 @@
           stopButton.classList.add('active');
           stopButton.classList.remove('disabled');
       })
-      fetch('/start_rec')
+	  fetch('/start_rec')
+	  Clock.start();
     }
 
     document.getElementById('stopBut').onclick = function (event) {
@@ -61,8 +89,12 @@
           startButton.classList.add('active');
           startButton.classList.remove('disabled');
       })
+      Clock.stop();
     }
+
   });
+
+
 {% endblock %}
 
 {% block content %}
@@ -74,5 +106,42 @@
       <button class="button disabled" id="startBut">start recording</button>
       <button class="button disabled" id="stopBut">stop recording</button>
 </div>
+<div align="center">
+	<timer class="timer tooltip" id="timeBox">
+		<span id="hour">0</span>H :
+		<span id="min">0</span>M :
+		<span id="sec">0</span>S
+		<span class="tooltiptext">recording time</span>
+	</timer>
+</div>
 
+<!--<div>
+	<span id="hour"></span>
+	<span id="min"></span>
+	<span id="sec"></span>
+
+	<input id="startButton" type="button" value="Start">
+	<input id="stopButton" type="button" value="Stop">
+</div>
+-->
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

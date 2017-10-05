@@ -2,6 +2,18 @@
 
 import os, signal, time, subprocess, psutil
 
+#Testing if cameras are available at given ip address
+def is_cameras_available():
+	cmdPING2 = subprocess.Popen([ 'ping', '-c', '1', '192.168.0.202'], stdout=subprocess.PIPE)
+	cmdPING3 = subprocess.Popen([ 'ping', '-c', '1', '192.168.0.203'], stdout=subprocess.PIPE)
+	while cmdPING2.poll() is None and cmdPING3.poll() is None:
+		time.sleep(0.01)
+	if cmdPING2.poll() == 0 and cmdPING3.poll() == 0:
+		return True
+	else:
+		print("One or both cameras are unreachable")
+		return False
+
 def capture_thumbnails():
     try:
         fileThumb = open('PIDthumbs','r')

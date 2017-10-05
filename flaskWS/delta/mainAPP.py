@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, Response
-from controlstreams import capture_thumbnails, is_recording, start_recording, stop_recording
+from controlstreams import is_cameras_available, capture_thumbnails, is_recording, start_recording, stop_recording
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -25,6 +25,8 @@ def unhandled_exception(e):
 
 @app.before_first_request
 def setup_page():
+	if not is_cameras_available():
+		print("Cant reach cams")
 	try:
 		capture_thumbnails()
 	except IOError as e:
@@ -43,8 +45,7 @@ def dragons():
 
 @app.route('/state')
 def state():
-	red = is_recording()
-	if red:
+	if is_recording():
 		return 'active'
 	return 'idle'
 

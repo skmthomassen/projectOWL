@@ -67,7 +67,6 @@ div {
 .button {
   background-color: indianred;
   color: white;
-  display: block;
   margin: 0 auto;
   border: none;
   padding: 15px 22px;
@@ -82,6 +81,50 @@ div {
 }
 .active {
     cursor: pointer;
+}
+
+.timer {
+  background-color: white;
+  color: black;
+  margin: 0 auto;
+  border: 1px solid lightpink;
+  padding: 15px 22px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor:default;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: auto;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+	font-weight: normal;
+    border-radius: 3px;
+    padding: 0.5em 0.6em;
+	white-space: nowrap;
+    position: absolute;
+    z-index: 1;
+    bottom: 105%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0; /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+    transition: opacity 1s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 0.5;
 }
 
 #imagesMain {
