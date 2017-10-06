@@ -44,7 +44,6 @@ def start_recording():
     except:
         pass
     startTime = int(time.time())
-    print("Starttime: " + str(startTime) )
     openFile('startTime','w', str(startTime) )
     recsExitCode = cmdREC.returncode
     if recsExitCode is 10:

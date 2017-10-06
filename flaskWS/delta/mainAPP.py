@@ -51,8 +51,9 @@ def state():
 
 @app.route('/time')
 def time():
-    timeStamp = recording_time()
-    print("timestamp: " + timeStamp)
+    recTime = recording_time()
+    timeStamp = str(recTime)
+    #print("timestamp: " + str(timeStamp) ) 
     return timeStamp
 
 @app.route('/start_rec')
