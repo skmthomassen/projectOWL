@@ -83,6 +83,24 @@ div {
     cursor: pointer;
 }
 
+.base {
+    background-color: indianred;
+    opacity: 0.6;
+    color: white;
+    margin: 0 auto;
+    border: none;
+    padding: 15px 22px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+}
+.base.active {
+    opacity: 1;
+    cursor: pointer;
+}
+
 .timer {
     background-color: white;
     color: black;
@@ -170,32 +188,4 @@ div {
         width: 38%;
         vertical-align: middle;
     }
-}    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}

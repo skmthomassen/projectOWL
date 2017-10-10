@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os, signal, time, subprocess, psutil
+from glob import glob
 
 #Testing if cameras are available at given ip address
 def is_cameras_available():
@@ -34,7 +35,7 @@ def recording_time():
     startTime = openFile('startTime', 'r', '')
     nowTime = int(time.time())
     timeStamp = nowTime - startTime
-    return timeStamp    
+    return timeStamp
 
 #Starting the recording script, saves its PID to a file
 def start_recording():
@@ -66,6 +67,18 @@ def stop_recording():
             p.wait()
         recProc.terminate()
         recProc.wait()
+
+def serve_recording():
+    allFileName = glob('clips/[0-9]*.tar.xz')
+    if not allFileName:
+        return False
+    fullFileName = max(allFileName)
+    path, fileName = fullFileName.split('/')
+    print ("fullFileName: " + str(fullFileName))
+    print ("path: " + str(path))
+    print ("fileName: " + str(fileName))
+    #return str(fileName)
+    return '20171010-131602.tar.xz'
 
 def openFile(fileName, rw, writeStr):
     if rw == 'r':

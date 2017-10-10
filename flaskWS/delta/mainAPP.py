@@ -1,6 +1,6 @@
-from flask import Flask, render_template, url_for, redirect, Response
-from controlstreams import is_cameras_available, capture_thumbnails, recording_time, is_recording, start_recording, stop_recording
-
+from flask import Flask, render_template, url_for, redirect, Response, send_from_directory
+from controlstreams import is_cameras_available, capture_thumbnails, recording_time, is_recording, start_recording, stop_recording, serve_recording
+#import controlstreams
 import logging
 from logging.handlers import RotatingFileHandler
 from logging import Formatter
@@ -53,7 +53,7 @@ def state():
 def time():
     recTime = recording_time()
     timeStamp = str(recTime)
-    #print("timestamp: " + str(timeStamp) ) 
+    #print("timestamp: " + str(timeStamp) )
     return timeStamp
 
 @app.route('/start_rec')
@@ -76,6 +76,17 @@ def stop_rec():
     app.logger.info('A recording was stopped')
     return 'ok'
 
+@app.route('/down_rec')
+def down_rec():
+    print("WILL start downloading now...")
+    try:
+        file = serve_recording()
+    except IOError as e:
+        app.logger.error('ERROR: couldnt start downloading')
+        render_template("500.htm", error = str(e))
+    app.logger.info('A download was started')
+    return 'ok'
+
 if __name__ == "__main__":
     logHandler = RotatingFileHandler('info.log', maxBytes=1000, backupCount=1)
     logHandler.setLevel(logging.INFO)
@@ -86,23 +97,3 @@ if __name__ == "__main__":
         '[in %(pathname)s:%(lineno)d]'
     ))
     app.run(debug=True, host='0.0.0.0')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

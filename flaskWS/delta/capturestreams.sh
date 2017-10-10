@@ -7,14 +7,15 @@ IP2UP=1
 IP3UP=1
 AUDIOUP=1
 
-SCRIPT=$(readlink -f "$0")
-SCRIPTPATH=$(dirname "$SCRIPT")
-CLIPDIR="$SCRIPTPATH/clips"
-
 # SUF=$(head -n 1 $SCRIPTPATH/suffix)
 # SUF=$(( $SUF + 1 ))
 # echo $SUF > $SCRIPTPATH/suffix
 SUF=$(date +"%Y%m%d-%H%M%S")
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+mkdir "$SCRIPTPATH/clips/$SUF"
+CLIPDIR="$SCRIPTPATH/clips"
+SUFDIR="$SCRIPTPATH/clips/$SUF"
 
 #Exits if either camera is unreachable
 if ping -c 1 $IP2 &> /dev/null ; then
@@ -35,10 +36,22 @@ fi
 
 parallel ::: \
 "ffmpeg -hide_banner -loglevel 0 -thread_queue_size 512 -rtsp_transport tcp -i rtsp://$IP2/av0_0 -f segment \
-  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts "$CLIPDIR/$SUF-cam2-%03d.ts"" \
+  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts "$SUFDIR/$SUF-cam2-%03d.ts"" \
 "ffmpeg -hide_banner -loglevel 0 -thread_queue_size 512 -rtsp_transport tcp -i rtsp://$IP3/av0_0 -f segment \
-  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts "$CLIPDIR/$SUF-cam3-%03d.ts"" \
+  -segment_time $SEGTIME -y -c:v copy -segment_format mpegts "$SUFDIR/$SUF-cam3-%03d.ts"" \
 "ffmpeg -hide_banner -loglevel 0 -thread_queue_size 512 -f alsa -i hw:1 -y -f segment \
-  -segment_time $SEGTIME -segment_format aac -acodec aac "$CLIPDIR/$SUF-audio-%03d.aac""
+  -segment_time $SEGTIME -segment_format aac -acodec aac "$SUFDIR/$SUF-audio-%03d.aac""
+
+wait
+tar cJf $CLIPDIR/$SUF.tar.xz -C $SUFDIR .
+
+
+
+
+
+
+
+
+
 
 exit 0

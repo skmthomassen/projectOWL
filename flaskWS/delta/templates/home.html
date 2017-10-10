@@ -3,66 +3,50 @@
 {% block javascript %}
 
 $(document).ready(function() {
-    
-    var timeElapsed
-    
-    setInterval(function(){
 
+    setInterval(function(){
         document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
         document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
 
         fetch('/state').then(function (response) {
-            
+          console.log("STATE: " );
             if (response.ok){
                 response.text().then(function (text) {
                     console.log("case: ", text);
                     switch(text) {
                         case 'active':
-                            document.getElementById('startBut').disabled = true;
-                            document.getElementById('stopBut').disabled = false;
-                            document.getElementById('stopBut').classList.remove('disabled');
-                            document.getElementById('stopBut').classList.add('active');
-                            document.getElementById('startBut').classList.remove('active');
-                            document.getElementById('startBut').classList.add('disabled');
+                            enableButton('stopBut');
+                            disableButton('startBut');
+                            disableButton('downBut');
                         break;
                         case 'idle':
-                            document.getElementById('startBut').disabled = false;
-                            document.getElementById('stopBut').disabled = true;
-                            document.getElementById('startBut').classList.remove('disabled');
-                            document.getElementById('startBut').classList.add('active');
-                            document.getElementById('stopBut').classList.remove('active');
-                            document.getElementById('stopBut').classList.add('disabled');
+                            enableButton('startBut');
+                            disableButton('stopBut');
+                            enableButton('downBut');
                         break;
                     }
                 });
-            } else {
-                console.log("Some error: ", text);
-                }
+            } else { console.log("Some error: ", text); }
         })
-    
+
     }, 3000); //END setInterval
-    
+
     fetch('/time').then(function (response) {
         response.text().then(function (text) {
             timeElapsed = text;
             console.log("timestamp: " + text );
         })
     })
-    
+
     var Clock = {
         totalSeconds: 0,
-        
         start: function () {
             var self = this;
-            self.totalSeconds = parseInt(timeElapsed);
-            console.log("timeElapsed: " + timeElapsed );
-            console.log("totalSeconds: " + totalSeconds );
-            
             this.interval = setInterval(function () {
                 self.totalSeconds += 1;
                 $("#hour").text(Math.floor(self.totalSeconds / 3600));
                 $("#min").text(Math.floor(self.totalSeconds / 60 % 60));
-                $("#sec").text(parseInt(self.totalSeconds % 60));
+                //$("#sec").text(parseInt(self.totalSeconds % 60));
             }, 1000);
         },
         stop: function () {
@@ -70,36 +54,49 @@ $(document).ready(function() {
             delete this.interval;
         },
     };
-    
-    Clock.start();
-    
+
+
+
     document.getElementById('startBut').onclick = function (event) {
-        var startButton = this,
-            stopButton = document.getElementById('stopBut');
-        fetch('/state').then(function (response) {
-            startButton.disabled = true;
-            stopButton.disabled = false;
-            startButton.classList.remove('active');
-            startButton.classList.add('disabled');
-            stopButton.classList.add('active');
-            stopButton.classList.remove('disabled');
+        fetch('/start_rec').then(function (response) {
+              enableButton('startBut');
+              disableButton('stopBut');
+              disableButton('downBut');
         })
-        fetch('/start_rec')
+        Clock.start();
     }
     document.getElementById('stopBut').onclick = function (event) {
-        var stopButton = this,
-            startButton = document.getElementById('startBut');
         fetch('/stop_rec').then(function (response) {
-            startButton.disabled = false;
-            stopButton.disabled = true;
-            stopButton.classList.remove('active');
-            stopButton.classList.add('disabled');
-            startButton.classList.add('active');
-            startButton.classList.remove('disabled');
+          enableButton('stopBut');
+          disableButton('startBut');
+          disableButton('downBut');
         })
         Clock.stop();
     }
+    document.getElementById('downBut').onclick = function (event) {
+        console.log("DOWN BUTTON WAS CLICKED");
+        fetch('/down_rec').then(function (response) {
+          console.log("Festching DOWN_REC");
+          disableButton('stopBut');
+          disableButton('startBut');
+          disableButton('downBut');
+        })
+    }
+
 });
+
+function disableButton(buttonid){
+  var butt = document.getElementById(buttonid);
+  butt.disabled = true;
+  butt.classList.add('disabled');
+  butt.classList.remove('active');
+}
+function enableButton(buttonid){
+  var butt = document.getElementById(buttonid);
+  butt.disabled = false;
+  butt.classList.add('active');
+  butt.classList.remove('disabled');
+}
 
 {% endblock %}
 
@@ -115,30 +112,11 @@ $(document).ready(function() {
 <div align="center">
     <timer class="timer tooltip" id="timeBox">
         <span id="hour">0</span>H :
-        <span id="min">0</span>M :
-        <span id="sec">0</span>S 
+        <span id="min">0</span>M
+        <!-- <span id="sec">0</span>S  -->
         <span class="tooltiptext">recording time</span>
     </timer>
+    <button class="button disabled" id="downBut">download recording</button>
 </div>
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
