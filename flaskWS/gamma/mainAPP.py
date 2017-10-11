@@ -1,5 +1,5 @@
-from flask import Flask, render_template, url_for, redirect, Response, send_file, send_from_directory
-from controlstreams import is_cameras_available, capture_thumbnails, recording_time, is_recording, start_recording, stop_recording, serve_recording
+from flask import Flask, render_template, url_for, redirect, Response, send_file, send_from_directory, abort
+from controlstreams import is_cameras_available, capture_thumbnails, recording_time, is_recording, start_recording, stop_recording, list_recordings, make_tree
 #import controlstreams
 import logging
 from logging.handlers import RotatingFileHandler
@@ -37,7 +37,8 @@ def setup_page():
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    files = list_recordings()
+    return render_template('home.html', files=files)
 
 @app.route('/dragons')
 def dragons():
@@ -76,8 +77,8 @@ def stop_rec():
     app.logger.info('A recording was stopped')
     return 'ok'
 
-@app.route('/down_rec')
-def down_rec():
+@app.route('/down_last_rec')
+def down_last_rec():
     print("WILL start downloading now...")
     try:
         file = serve_recording()
@@ -90,9 +91,31 @@ def down_rec():
     return send_file('/home/kim/projectOWL/flaskWS/delta/static/20171011-103652.tar.xz', as_attachment=True)
     #return send_from_directory(file, as_attachment=True)
 
-@app.route('/down_try')
-def down_try():
-    return send_file('/home/kim/projectOWL/flaskWS/delta/clips/20171011-103747.tar.xz', as_attachment=True)
+@app.route('/get_tree')
+def get_tree():
+    list = make_tree()
+    return list
+
+@app.route('/download_recording')
+def download_recording(path):
+    return send_file(path, as_attachment=True)
+
+#@app.route('/', defaults={'req_path': ''})
+#@app.route('/<path:req_path>')
+def dir_listing(req_path):
+    BASE_DIR = '/home/kim/projectOWL/flaskWS/gamma/clips'
+    # Joining the base and the requested path
+    abs_path = os.path.join(BASE_DIR, req_path)
+    # Return 404 if path doesn't exist
+    if not os.path.exists(abs_path):
+        return abort(404)
+    # Check if path is a file and serve
+    if os.path.isfile(abs_path):
+        return send_file(abs_path)
+    # Show directory contents
+    files = os.listdir(abs_path)
+    # return render_template('files.html', files=files)
+    return render_template('home.html',files=files)
 
 if __name__ == "__main__":
     logHandler = RotatingFileHandler('info.log', maxBytes=1000, backupCount=1)

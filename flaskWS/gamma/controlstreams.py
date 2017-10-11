@@ -31,11 +31,15 @@ def is_recording():
         return True
     return False
 
+#Checks how long since last recording
 def recording_time():
-    startTime = openFile('startTime', 'r', '')
-    nowTime = int(time.time())
-    timeStamp = nowTime - startTime
-    return timeStamp
+    if is_recording():
+        startTime = openFile('startTime', 'r', '')
+        nowTime = int(time.time())
+        timeStamp = nowTime - startTime
+        return timeStamp
+    else:
+        return 0
 
 #Starting the recording script, saves its PID to a file
 def start_recording():
@@ -69,14 +73,34 @@ def stop_recording():
         recProc.wait()
 
 #Finds the most recent recording and returns its path
-def serve_recording():
-    allFileName = glob('clips/[0-9]*.tar.xz')
-    if not allFileName:
+def list_recordings():
+    pathedFileNames = glob('clips/[0-9]*.tar.xz')
+    if not pathedFileNames:
         return False
-    fullFileName = max(allFileName)
-    #path, fileName = fullFileName.split('/')
-    return str(fullFileName)
+    #fullFileName = max(allFileName)
+    justFileNames = list()
+    for file in pathedFileNames:
+        file = str(os.path.basename(file))
+        fileName, tar, xz = file.split('.')
+        justFileNames.append(fileName)
+    # path, wholeFileNames = pathedFileNames.split('/')
+    # path, justFileNames = justFileNames.split('.')
+    return justFileNames
 
+def make_tree():
+    path = 'clips/'
+    tree = dict(name=path, children=[])
+    try: lst = os.listdir(path)
+    except OSError:
+        pass #ignore errors
+    else:
+        for name in lst:
+            fn = os.path.join(path, name)
+            if os.path.isdir(fn):
+                tree['children'].append(make_tree(fn))
+            else:
+                tree['children'].append(dict(name=fn))
+    return tree
 
 def openFile(fileName, rw, writeStr):
     if rw == 'r':
