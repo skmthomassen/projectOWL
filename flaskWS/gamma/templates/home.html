@@ -45,7 +45,7 @@ $(document).ready(function() {
         self.totalSeconds += 1;
         $("#hour").text(Math.floor(self.totalSeconds / 3600));
         $("#min").text(Math.floor(self.totalSeconds / 60 % 60));
-        //$("#sec").text(parseInt(self.totalSeconds % 60));
+        $("#sec").text(parseInt(self.totalSeconds % 60));
       }, 1000);
     },
     stop: function () {
@@ -115,20 +115,22 @@ function enableButton(buttonid){
   <button class="button disabled" id="stopBut">stop recording</button>
 </div>
 <div align="center">
-  <timer class="timer tooltip" id="timeBox">
+  <timer class="capsule timer tooltip" id="timeBox">
     <span id="hour">0</span>H :
-    <span id="min">0</span>M
-    <!-- <span id="sec">0</span>S  -->
+    <span id="min">0</span>M :
+    <span id="sec">0</span>S
     <span class="tooltiptext">recording time</span>
   </timer>
+</div>
+<div align="center">
   <div class="dropdown">
     <button class="dropbtn" id="downBut">download a recording</button>
     <div class="dropdown-content">
       {% for file in files %}
-        <a href="{{ file }}">{{ file }}</a>
+        <!-- <a href="{{ file }}">{{ file }}</a> -->
+        <a href="/clips/{{ file }}" id="{{ file }}">{{ file }}</a>
       {% endfor %}
     </div>
   </div>
 </div>
-
 {% endblock %}

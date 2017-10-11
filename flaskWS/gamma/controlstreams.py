@@ -77,30 +77,12 @@ def list_recordings():
     pathedFileNames = glob('clips/[0-9]*.tar.xz')
     if not pathedFileNames:
         return False
-    #fullFileName = max(allFileName)
     justFileNames = list()
     for file in pathedFileNames:
         file = str(os.path.basename(file))
         fileName, tar, xz = file.split('.')
         justFileNames.append(fileName)
-    # path, wholeFileNames = pathedFileNames.split('/')
-    # path, justFileNames = justFileNames.split('.')
     return justFileNames
-
-def make_tree():
-    path = 'clips/'
-    tree = dict(name=path, children=[])
-    try: lst = os.listdir(path)
-    except OSError:
-        pass #ignore errors
-    else:
-        for name in lst:
-            fn = os.path.join(path, name)
-            if os.path.isdir(fn):
-                tree['children'].append(make_tree(fn))
-            else:
-                tree['children'].append(dict(name=fn))
-    return tree
 
 def openFile(fileName, rw, writeStr):
     if rw == 'r':

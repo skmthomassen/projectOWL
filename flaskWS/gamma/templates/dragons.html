@@ -44,6 +44,15 @@ $(document).ready(function() {
         <span id="sec">0</span>S
         <span class="tooltiptext">recording time</span>
     </timer>
-    <button class="base" id="downBut">download recording</button>
+</div>
+<div align="center">
+  <div class="dropdown">
+    <button class="dropbtn" id="downBut">download a recording</button>
+    <div class="dropdown-content">
+      {% for file in files %}
+        <a href="{{ file }}">{{ file }}</a>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 {% endblock %}

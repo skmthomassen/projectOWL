@@ -85,12 +85,17 @@ div {
 
 /* Dropdown Button */
 .dropbtn {
-   background-color: indianred;
-   color: white;
-   padding: 15px 22px;
-   font-size: 16px;
-   border: none;
-   cursor: pointer;
+  background-color: indianred;
+  color: white;
+  margin: 0 auto;
+  border: none;
+  padding: 15px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: default;
 }
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
@@ -110,12 +115,12 @@ div {
 /* Links inside the dropdown */
 .dropdown-content a {
    color: black;
-   padding: 12px 16px;
+   padding: 5px 8px;
    text-decoration: none;
    display: block;
 }
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {background-color: #ddd}
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
    display: block;
@@ -129,7 +134,7 @@ div {
     background-color: white;
     color: black;
     margin: 0 auto;
-    border: 1px solid lightpink;
+    /*border: 1px solid lightpink;*/
     padding: 15px 22px;
     text-align: center;
     text-decoration: none;

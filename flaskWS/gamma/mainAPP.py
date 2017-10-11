@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, Response, send_file, send_from_directory, abort
-from controlstreams import is_cameras_available, capture_thumbnails, recording_time, is_recording, start_recording, stop_recording, list_recordings, make_tree
+from controlstreams import is_cameras_available, capture_thumbnails, recording_time, is_recording, start_recording, stop_recording, list_recordings
 #import controlstreams
 import logging
 from logging.handlers import RotatingFileHandler
@@ -38,6 +38,8 @@ def setup_page():
 @app.route('/home')
 def home():
     files = list_recordings()
+    if not files:
+        return render_template('home.html')
     return render_template('home.html', files=files)
 
 @app.route('/dragons')
@@ -91,14 +93,12 @@ def down_last_rec():
     return send_file('/home/kim/projectOWL/flaskWS/delta/static/20171011-103652.tar.xz', as_attachment=True)
     #return send_from_directory(file, as_attachment=True)
 
-@app.route('/get_tree')
-def get_tree():
-    list = make_tree()
-    return list
-
+@app.route('/<path:req_path>')
 @app.route('/download_recording')
-def download_recording(path):
-    return send_file(path, as_attachment=True)
+def download_recording(req_path):
+    filepath = '/home/kim/projectOWL/flaskWS/gamma/' + str(req_path) + ".tar.xz"
+    #filepath = filepath + ".tar.xz"
+    return send_file(filepath, as_attachment=True)
 
 #@app.route('/', defaults={'req_path': ''})
 #@app.route('/<path:req_path>')
