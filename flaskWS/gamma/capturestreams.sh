@@ -43,8 +43,8 @@ parallel ::: \
   -segment_time $SEGTIME -segment_format aac -acodec aac "$SUFDIR/$SUF-audio-%03d.aac""
 
 wait
-tar cJf $CLIPDIR/$SUF.tar.xz -C $SUFDIR .
-
+#tar cJf $CLIPDIR/$SUF.tar.xz -C $SUFDIR .
+tar cf $CLIPDIR/$SUF.tar -C $SUFDIR .
 
 
 
