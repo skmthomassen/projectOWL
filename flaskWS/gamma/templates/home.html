@@ -3,6 +3,14 @@
 {% block javascript %}
 
 $(document).ready(function() {
+
+  fetch('/time').then(function (response) {
+    response.text().then(function (text) {
+      Clock.start( parseInt(text) );
+      console.log("timestamp: " + text );
+    })
+  })
+
   setInterval(function(){
     document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
     document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
@@ -17,16 +25,19 @@ $(document).ready(function() {
             case 'active':
             enableButton('stopBut');
             disableButton('startBut');
-            disableButton('downBut');
+            enableButton('downBut');
             document.getElementById('actTxt').classList.remove('hidden');
             document.getElementById('idleTxt').classList.add('hidden');
+            document.getElementById('agoTxt').classList.remove('hidden');
             break;
             case 'idle':
             enableButton('startBut');
             disableButton('stopBut');
             enableButton('downBut');
             document.getElementById('actTxt').classList.add('hidden');
+            document.getElementById('stopTxt').classList.add('hidden');
             document.getElementById('idleTxt').classList.remove('hidden');
+            document.getElementById('agoTxt').classList.remove('hidden');
             break;
           }
         });
@@ -34,22 +45,14 @@ $(document).ready(function() {
     })
   }, 500);
 
-  fetch('/time').then(function (response) {
-    response.text().then(function (text) {
-      timeElapsed = text;
-      console.log("timestamp: " + text );
-    })
-  })
-
   var Clock = {
-    totalSeconds: 0,
-    start: function () {
+    start: function (seconds) {
       var self = this;
       this.interval = setInterval(function () {
-        self.totalSeconds += 1;
-        $("#hour").text(Math.floor(self.totalSeconds / 3600));
-        $("#min").text(Math.floor(self.totalSeconds / 60 % 60));
-        $("#sec").text(parseInt(self.totalSeconds % 60));
+        seconds += 1;
+        $("#hour").text(Math.floor(seconds / 3600));
+        $("#min").text(Math.floor(seconds / 60 % 60));
+        $("#sec").text(parseInt(seconds % 60));
       }, 1000);
     },
     stop: function () {
@@ -59,38 +62,36 @@ $(document).ready(function() {
   };
 
   document.getElementById('startBut').onclick = function (event) {
+    document.getElementById('actTxt').classList.remove('hidden');
+    document.getElementById('idleTxt').classList.add('hidden');
     disableButton('startBut');
     disableButton('stopBut');
     disableButton('downBut');
-
-    fetch('/start_rec').then(function (response) {
-      Clock.start();
-    })
+    fetch('/start_rec');
+    Clock.stop();
+    Clock.start(0);
   }
   document.getElementById('stopBut').onclick = function (event) {
+    document.getElementById('actTxt').classList.add('hidden');
+    document.getElementById('idleTxt').classList.add('hidden');
+    document.getElementById('agoTxt').classList.add('hidden');
+    document.getElementById('stopTxt').classList.remove('hidden');
     disableButton('stopBut');
     disableButton('startBut');
     disableButton('downBut');
-
-    fetch('/stop_rec').then(function (response) {
-      Clock.stop();
-    })
+    fetch('/stop_rec');
+    Clock.stop();
   }
   document.getElementById('downBut').onclick = function (event) {
-    console.log("DOWN BUTTON WAS CLICKED");
     fetch('/down_rec').then(function (response) {
       if (response.ok){
         window.location.assign('/down_rec');
-        //window.location = '/down_rec';
-        //window.location.assign('/down_try');
-        console.log("Fetching DOWN_REC");
         disableButton('stopBut');
         disableButton('startBut');
         disableButton('downBut');
       }
     })
   }
-
 });
 
 
@@ -120,9 +121,9 @@ function enableButton(buttonid){
     <button class="button disabled" id="stopBut">stop recording</button>
     <div class="dropdown">
       <button class="button" id="downBut">download a recording</button>
-      <div class="dropdown-content">
+      <div class="dropdown-content" id="dropdownContent">
         {% for file in files %}
-          <a href="/clips/{{ file }}" id="{{ file }}">{{ file }}</a>
+          <a href="/clips/{{ file }}">{{ file }}</a>
         {% endfor %}
       </div>
     </div>
@@ -131,6 +132,7 @@ function enableButton(buttonid){
 <hr>
 <div align="center">
     <span class="paragraph hidden" id="idleTxt" >Last recording ended</span>
+    <span class="paragraph hidden" id="stopTxt" >The recording ended at</span>
     <span class="paragraph hidden" id="actTxt" >A recording was started</span>
     <span class="paragraph tooltip" id="timeBox">
         <span id="hour">0</span><span>h:</span>
@@ -138,6 +140,6 @@ function enableButton(buttonid){
         <span id="sec">0</span><span>s</span>
         <span class="tooltiptext">Time of recording</span>
     </span>
-    <span class="paragraph" id="endTxt" >ago</span>
+    <span class="paragraph hidden" id="agoTxt" >ago</span>
 </div>
 {% endblock %}

@@ -39,7 +39,10 @@ def recording_time():
         timeStamp = nowTime - startTime
         return timeStamp
     else:
-        return 0
+        stopTime = openFile('stopTime', 'r', '')
+        nowTime = int(time.time())
+        timeStamp = nowTime - stopTime
+        return timeStamp
 
 #Starting the recording script, saves its PID to a file
 def start_recording():
@@ -71,6 +74,8 @@ def stop_recording():
             p.wait()
         recProc.terminate()
         recProc.wait()
+    stopTime = int(time.time())
+    openFile('stopTime','w', str(stopTime) )
 
 #Finds the most recent recording and returns its path
 def list_recordings():
