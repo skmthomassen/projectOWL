@@ -74,13 +74,13 @@ def stop_recording():
 
 #Finds the most recent recording and returns its path
 def list_recordings():
-    pathedFileNames = glob('clips/[0-9]*.tar.xz')
+    pathedFileNames = glob('clips/[0-9]*.tar')
     if not pathedFileNames:
         return False
     justFileNames = list()
     for file in pathedFileNames:
         file = str(os.path.basename(file))
-        fileName, tar, xz = file.split('.')
+        fileName, tar = file.split('.')
         justFileNames.append(fileName)
     return justFileNames
 

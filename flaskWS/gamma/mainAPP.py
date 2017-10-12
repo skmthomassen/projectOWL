@@ -96,7 +96,7 @@ def down_last_rec():
 @app.route('/<path:req_path>')
 @app.route('/download_recording')
 def download_recording(req_path):
-    filepath = '/home/kim/projectOWL/flaskWS/gamma/' + str(req_path) + ".tar.xz"
+    filepath = '/home/kim/projectOWL/flaskWS/gamma/' + str(req_path) + ".tar"
     #filepath = filepath + ".tar.xz"
     return send_file(filepath, as_attachment=True)
 

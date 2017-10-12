@@ -18,11 +18,15 @@ $(document).ready(function() {
             enableButton('stopBut');
             disableButton('startBut');
             disableButton('downBut');
+            document.getElementById('actTxt').classList.remove('hidden');
+            document.getElementById('idleTxt').classList.add('hidden');
             break;
             case 'idle':
             enableButton('startBut');
             disableButton('stopBut');
             enableButton('downBut');
+            document.getElementById('actTxt').classList.add('hidden');
+            document.getElementById('idleTxt').classList.remove('hidden');
             break;
           }
         });
@@ -106,31 +110,34 @@ function enableButton(buttonid){
 {% endblock %}
 
 {% block content %}
-<div id="imagesMain">
+<div class=capsule id="imagesMain">
   <img id="L" src="{{ url_for('static', filename="thumbs/202left.png" )}}">
   <img id="R" src="{{ url_for('static', filename="thumbs/203right.png" )}}">
 </div>
+
 <div align="center">
-  <button class="button disabled" id="startBut">start recording</button>
-  <button class="button disabled" id="stopBut">stop recording</button>
-</div>
-<div align="center">
-  <timer class="capsule timer tooltip" id="timeBox">
-    <span id="hour">0</span>H :
-    <span id="min">0</span>M :
-    <span id="sec">0</span>S
-    <span class="tooltiptext">recording time</span>
-  </timer>
-</div>
-<div align="center">
-  <div class="dropdown">
-    <button class="dropbtn" id="downBut">download a recording</button>
-    <div class="dropdown-content">
-      {% for file in files %}
-        <!-- <a href="{{ file }}">{{ file }}</a> -->
-        <a href="/clips/{{ file }}" id="{{ file }}">{{ file }}</a>
-      {% endfor %}
+    <button class="button disabled" id="startBut">start recording</button>
+    <button class="button disabled" id="stopBut">stop recording</button>
+    <div class="dropdown">
+      <button class="button" id="downBut">download a recording</button>
+      <div class="dropdown-content">
+        {% for file in files %}
+          <a href="/clips/{{ file }}" id="{{ file }}">{{ file }}</a>
+        {% endfor %}
+      </div>
     </div>
   </div>
+</div>
+<hr>
+<div align="center">
+    <span class="paragraph hidden" id="idleTxt" >Last recording ended</span>
+    <span class="paragraph hidden" id="actTxt" >A recording was started</span>
+    <span class="paragraph tooltip" id="timeBox">
+        <span id="hour">0</span><span>h:</span>
+        <span id="min">0</span><span>m:</span>
+        <span id="sec">0</span><span>s</span>
+        <span class="tooltiptext">Time of recording</span>
+    </span>
+    <span class="paragraph" id="endTxt" >ago</span>
 </div>
 {% endblock %}
