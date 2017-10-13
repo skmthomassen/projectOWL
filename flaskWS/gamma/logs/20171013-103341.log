@@ -1,0 +1,2 @@
+Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
+3	:	1507883621.230	     0.019	0	0	1	0	ffmpeg -hide_banner -loglevel 0 -thread_queue_size 512 -f alsa -i hw:1 -y -f segment   -segment_time 600 -segment_format aac -acodec aac /home/kim/projectOWL/flaskWS/gamma/clips/20171013-103341/20171013-103341-audio-%03d.aac
