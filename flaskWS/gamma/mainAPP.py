@@ -4,7 +4,7 @@ from controlstreams import is_cameras_available, capture_thumbnails, \
 import logging
 from logging.handlers import RotatingFileHandler
 from logging import Formatter
-import os, subprocess
+import os, sys, subprocess
 
 app = Flask(__name__)
 
@@ -81,8 +81,8 @@ def stop_rec():
 @app.route('/<path:req_path>')
 @app.route('/download_recording')
 def download_recording(req_path):
-    path = os.path.realpath(__file__)
-    filepath = str(path) + str(req_path) + ".tar"
+    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+    filepath = str(path) + '/' + str(req_path) + ".tar"
     return send_file(filepath, as_attachment=True)
 
 if __name__ == "__main__":
