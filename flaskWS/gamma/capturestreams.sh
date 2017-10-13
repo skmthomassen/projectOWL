@@ -34,7 +34,7 @@ fi
 #   exit 10
 # fi
 
-parallel ::: \
+parallel  --progress --verbose --joblog $PWD/logs/$SUF.log ::: \
 "ffmpeg -hide_banner -loglevel 0 -thread_queue_size 512 -rtsp_transport tcp -i rtsp://$IP2/av0_0 -f segment \
   -segment_time $SEGTIME -y -c:v copy -segment_format mpegts "$SUFDIR/$SUF-cam2-%03d.ts"" \
 "ffmpeg -hide_banner -loglevel 0 -thread_queue_size 512 -rtsp_transport tcp -i rtsp://$IP3/av0_0 -f segment \
