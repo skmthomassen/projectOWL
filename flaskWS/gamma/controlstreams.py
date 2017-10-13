@@ -107,20 +107,6 @@ def openFile(fileName, rw, writeStr):
         except FileNotFoundError:
             print("File couldn't be opened: " + str(fileName) )
 
-#Either start or stop a recording, depending on whether a PID exists
-def toggle_record():
-    try:
-        fileRec = open('PIDrecording','r')
-        recPID = fileRec.readline()
-        fileRec.close()
-        rx = os.path.isdir("/proc/" + recPID)
-        if rx:
-            stop_recording()
-        else:
-            start_recording()
-    except IOError:
-        print("File PIDrecording couldn't be opened.5")
-
 #if __name__ == "__main__":
     #toggle_record()
     #print("di start? " + str(start_recording()) )

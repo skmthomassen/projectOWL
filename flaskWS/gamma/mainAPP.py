@@ -1,10 +1,9 @@
 from flask import Flask, render_template, url_for, redirect, Response, send_file, send_from_directory, abort
-from controlstreams import is_cameras_available, capture_thumbnails, recording_time, is_recording, start_recording, stop_recording, list_recordings
-#import controlstreams
+from controlstreams import is_cameras_available, capture_thumbnails, \
+     recording_time, is_recording, start_recording, stop_recording, list_recordings
 import logging
 from logging.handlers import RotatingFileHandler
 from logging import Formatter
-
 import os, subprocess
 
 app = Flask(__name__)
@@ -82,8 +81,8 @@ def stop_rec():
 @app.route('/<path:req_path>')
 @app.route('/download_recording')
 def download_recording(req_path):
-    filepath = '/home/kim/projectOWL/flaskWS/gamma/' + str(req_path) + ".tar"
-    #filepath = filepath + ".tar.xz"
+    path = os.path.realpath(__file__)
+    filepath = str(path) + str(req_path) + ".tar"
     return send_file(filepath, as_attachment=True)
 
 if __name__ == "__main__":
@@ -95,4 +94,5 @@ if __name__ == "__main__":
         '%(asctime)s %(levelname)s: %(message)s '
         '[in %(pathname)s:%(lineno)d]'
     ))
-    app.run(debug=True, host='0.0.0.0')
+    app.config.from_object('config.DevelopmentConfig')
+    app.run(host='0.0.0.0')
