@@ -86,7 +86,7 @@ def download_recording(req_path):
     return send_file(filepath, as_attachment=True)
 
 if __name__ == "__main__":
-    logHandler = RotatingFileHandler('info.log', maxBytes=1000, backupCount=1)
+    logHandler = RotatingFileHandler('logs/info.log', maxBytes=1000, backupCount=1)
     logHandler.setLevel(logging.INFO)
     app.logger.setLevel(logging.INFO)
     app.logger.addHandler(logHandler)

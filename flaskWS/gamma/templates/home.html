@@ -12,8 +12,12 @@ $(document).ready(function() {
   })
 
   setInterval(function(){
-    document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
-    document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
+    document.getElementById("L").src = http://192.168.0.202/cgi-bin/images_cgi?channel=0&user=admin&pwd=admin&time=2
+    document.getElementById("R").src = http://192.168.0.203/cgi-bin/images_cgi?channel=0&user=User2&pwd=hest1234&time=2
+    //document.getElementById("L").src = "static/thumbs/202left.png?" + new Date().getTime();
+    //document.getElementById("R").src = "static/thumbs/203right.png?" + new Date().getTime();
+    //http://192.168.0.202/cgi-bin/images_cgi?channel=0&user=admin&pwd=admin&time=2
+    //http://192.168.0.203/cgi-bin/images_cgi?channel=0&user=User2&pwd=hest1234&time=2
   }, 5000);
 
   setInterval(function(){
