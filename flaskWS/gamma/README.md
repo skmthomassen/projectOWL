@@ -1,10 +1,8 @@
 Welcome to the projectOWL web-server! 
 
-Project is meant to serve a simple web-site showing changing thumbnails with changing output from two IP cameras, and give the user the ability to start a recording of the cameras stream. 
+Project is meant to serve a simple web-site showing changing thumbnails with changing output from two IP cameras, and give the user the ability to start/stop a recording of the cameras stream, and then download a record to their client machine.
 
-TODO; the ability to download said video should be added.
-
-Start by running the mainAPP.py script.
+Start webserver by running the mainAPP.py script.
 
 Prerequisits:
 -python3

@@ -9,20 +9,22 @@
   {% endblock %}
   </script>
 </head>
-  <body>
-    <header>
-      <h1>projectOWL</h1>
-      <nav>
-        <a href="{{ url_for('home') }}">home</a>
-        <a href="{{ url_for('dragons') }}">dragons</a>
-      </nav>
-    </header>
-    <div class="container">
+
+<header>
+  <h1>projectOWL</h1>
+  <nav>
+    <a href="{{ url_for('home') }}">home</a>
+    <a href="{{ url_for('dragons') }}">dragons</a>
+  </nav>
+</header>
+<body>
+  <div>
     {% block content %}
     {% endblock %}
-    </div>
-    <footer>
-      <p>An alpha site for the super secret projectOWL<p/>
-    </footer>
-  </body>
+  </div>
+</body>
+<footer>
+  <p>An alpha site for the super secret projectOWL<p/>
+</footer>
+
 </html>
