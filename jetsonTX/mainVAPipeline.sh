@@ -6,7 +6,7 @@ FILENAME=$(date +"%Y%m%d-%H%M%S")
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 #VID_DIR="$SCRIPTPATH/videos"
-VID_DIR="/mnt/container/hardware/Jetson\ TX/AVtests/16november"
+VID_DIR="/mnt/container/hardware/Jetson\ TX/AVtests/17nov"
 
 echo "Starting recoring: "$FILENAME
 
@@ -17,13 +17,13 @@ gst-launch-1.0 -e \
 		! "video/x-raw, format=(string)UYVY, framerate=30/1, width=(int)3840, height=(int)2160" \
 		! nvvidconv \
 		! "video/x-raw(memory:NVMM), format=(string)I420, width=(int)3840, height=(int)2160, framerate=30/1" \
-		! omxh265enc gst_omx_video_enc_change_state iframeinterval=1100000000 \
-		! matroskamux \
-		! filesink location=$VID_DIR/$FILENAME.mkv
+		! omxh265enc \
+		! matroskamux min-index-interval=1000000\
+		! multifilesink next-file=max-duration max-file-duration=10000000000 location=$VID_DIR/$FILENAME-%05d.mkv
 
 exit 0
 
-
+#! multifilesink next-file=max-duration max-file-duration=30000000000 location=$VID_DIR/$FILENAME-%05d.mkv
 #SliceIntraRefreshEnable=true SliceIntraRefreshInterval=1
 
 # iframe-period=10
