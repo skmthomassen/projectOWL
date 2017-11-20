@@ -17,11 +17,15 @@ gst-launch-1.0 -e \
 		! "video/x-raw, format=(string)UYVY, framerate=30/1, width=(int)3840, height=(int)2160" \
 		! nvvidconv \
 		! "video/x-raw(memory:NVMM), format=(string)I420, width=(int)3840, height=(int)2160, framerate=30/1" \
-		! omxh265enc \
+		! omxh265enc iframeinterval=15 \
 		! matroskamux min-index-interval=1000000\
 		! multifilesink next-file=max-duration max-file-duration=10000000000 location=$VID_DIR/$FILENAME-%05d.mkv
 
 exit 0
+
+#---OMXH265ENC---#
+#iframeinterval --> Unsigned Integer. Range: 0 - 4294967295 Default: 0
+
 
 #! multifilesink next-file=max-duration max-file-duration=30000000000 location=$VID_DIR/$FILENAME-%05d.mkv
 #SliceIntraRefreshEnable=true SliceIntraRefreshInterval=1
