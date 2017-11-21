@@ -2,6 +2,8 @@
 
 V_DEV='/dev/video0'
 A_DEV='hw:1'
+width='3840'
+height='2160'
 FILENAME=$(date +"%Y%m%d-%H%M%S")
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
