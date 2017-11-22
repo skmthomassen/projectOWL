@@ -1,17 +1,18 @@
 #!/bin/bash
 
-V_DEV='/dev/video0'
-A_DEV='hw:1'
-width='3840'
-height='2160'
-FILENAME=$(date +"%Y%m%d-%H%M%S")
-SCRIPT=$(readlink -f "$0")
-SCRIPTPATH=$(dirname "$SCRIPT")
-VID_DIR="$SCRIPTPATH/videos"
-#VID_DIR="/mnt/container/hardware/Jetson\ TX/AVtests/20nov"
+VIDEO_DEV='/dev/video0'
+AUDIO_DEV='hw:1'
+WIDTH='3840'
+HEIGHT='2160'
+DAYANDTIME=$(date +"%Y%m%d-%H%M%S")
+TODAY=$(date +"%b%d")
+SCRIPT_PATH=$(readlink -f "$0")
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+mkdir -p $SCRIPT_DIR/clips/$TODAY
+CLIPS_DIR=$SCRIPT_DIR/clips/$TODAY
+#CLIPS_DIR=$(mkdir -p /mnt/container/hardware/jetsontxx/clips/$TODAY/)
 
-echo "---Recording: "$FILENAME
-
+echo "Starting recoring: " $CLIPS_DIR/$DAYANDTIME
 GST_DEBUG=3 gst-launch-1.0 -e videotestsrc num-buffers=200 \
 	! 'video/x-raw, width=(int)1280, height=(int)720, format=(string)I420' \
 	! omxh265enc iframeinterval=100 \

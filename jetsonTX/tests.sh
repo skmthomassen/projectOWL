@@ -8,14 +8,13 @@ DAYANDTIME=$(date +"%Y%m%d-%H%M%S")
 TODAY=$(date +"%b%d")
 SCRIPT_PATH=$(readlink -f "$0")
 SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+mkdir -p $SCRIPT_DIR/clips/$TODAY
+CLIPS_DIR=$SCRIPT_DIR/clips/$TODAY
+#CLIPS_DIR=$(mkdir -p /mnt/container/hardware/jetsontxx/clips/$TODAY/)
 
-mkdir -p $SCRIPT_DIR/clips/$TODAY/
+echo "Starting recoring: " $CLIPS_DIR/$DAYANDTIME
 
-CLIPS_DIR="$SCRIPT_PATH/clips/$TODAY"
-#CLIPS_DIR="/mnt/container/hardware/Jetson\ TX/AVtests/17nov"
-
-
-echo 'SCRIPT_DIR ' $SCRIPT_DIR
-echo 'SCRIPT_PATH ' $SCRIPT_PATH
+#echo 'SCRIPT_DIR ' $SCRIPT_DIR
+#echo 'SCRIPT_PATH ' $SCRIPT_PATH
 
 exit 0
