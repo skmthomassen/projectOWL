@@ -12,8 +12,8 @@ VID_DIR="/mnt/container/hardware/Jetson\ TX/AVtests/17nov"
 
 echo "Starting recoring: "$FILENAME
 
-gst-launch-1.0 -e \
-	v4l2src device=$V_DEV \
+GST_DEBUG=3 gst-launch-1.0 -e \
+	v4l2src \
 		! progressreport update-freq=10 \
 		! queue max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
 		! "video/x-raw, format=(string)UYVY, framerate=30/1, width=(int)3840, height=(int)2160" \
