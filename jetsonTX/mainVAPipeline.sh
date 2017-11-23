@@ -8,11 +8,12 @@ DAYANDTIME=$(date +"%Y%m%d-%H%M%S")
 TODAY=$(date +"%b%d")
 SCRIPT_PATH=$(readlink -f "$0")
 SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
-mkdir -p $SCRIPT_DIR/clips/$TODAY
-CLIPS_DIR=$SCRIPT_DIR/clips/$TODAY
-#CLIPS_DIR=$(mkdir -p /mnt/container/hardware/jetsontxx/clips/$TODAY/)
 
-echo "Starting recoring: " $CLIPS_DIR/$DAYANDTIME
+#FILE_PATH=$SCRIPT_DIR/clips/$TODAY
+FILE_PATH="/mnt/container/hardware/jetsontxx/clips/$TODAY"
+mkdir -p $FILE_PATH
+
+echo "Starting recoring: " $FILE_PATH/$DAYANDTIME
 
 GST_DEBUG=3 gst-launch-1.0 -e \
 	v4l2src \
@@ -21,9 +22,9 @@ GST_DEBUG=3 gst-launch-1.0 -e \
 		! "video/x-raw, format=(string)UYVY, framerate=30/1, width=(int)3840, height=(int)2160" \
 		! nvvidconv \
 		! "video/x-raw(memory:NVMM), format=(string)I420, width=(int)3840, height=(int)2160, framerate=30/1" \
-		! omxh265enc iframeinterval=15 \
-		! matroskamux min-index-interval=1000000\
-		! multifilesink next-file=max-duration max-file-duration=10000000000 location=$VID_DIR/$FILENAME-%05d.mkv
+		! omxh265enc \
+		! matroskamux min-index-interval=1000000 \
+		! filesink location=$FILE_PATH/$DAYANDTIME.mkv
 
 exit 0
 

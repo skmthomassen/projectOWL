@@ -15,11 +15,28 @@ mkdir -p $FILE_PATH
 echo "Starting recoring: " $FILE_PATH/$DAYANDTIME
 
 case $ARG in
+	-4)
+	GST_DEBUG=3 gst-launch-1.0 -e nvcamerasrc fpsRange="30 30" \
+		! "video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1" \
+		! nvtee ! nvvidconv \
+		! "video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)NV12" \
+		! omxh265enc \
+		! h265parse \
+		! splitmuxsink location=$FILE_PATH/$DAYANDTIME-%05d.mkv max-size-time=5000000000 muxer=matroskamux
+	;;
+	-3)
+	GST_DEBUG=3 gst-launch-1.0 -e nvcamerasrc fpsRange="30 30" \
+		! "video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1" \
+		! nvtee ! nvvidconv \
+		! "video/x-raw(memory:NVMM), width=(int)640, height=(int)480, format=(string)NV12" \
+		! omxh264enc  \
+		! h264parse \
+		! splitmuxsink location=$FILE_PATH/$DAYANDTIME-%05d.mkv max-size-time=5000000000
+	;;
 	-2)
 	GST_DEBUG=3 gst-launch-1.0 -e nvcamerasrc fpsRange="30 30" \
 		! "video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1" \
-		! nvtee \
-		! nvvidconv \
+		! nvtee ! nvvidconv \
 		! "video/x-raw(memory:NVMM), width=(int)640, height=(int)480, format=(string)NV12" \
 		! omxh265enc iframeinterval=5 \
 		! matroskamux \
@@ -55,21 +72,6 @@ case $ARG in
 	;;
 esac
 
-#duration i nanosekunder: 5min=300000000000 - 3*e^11 || 1min=60000000000 - 6*e^10 || 30sec=30000000000 - 3*e^10 || 5sec=5000000000 - 5*e^9
-#! multifilesink next-file=max-duration max-file-duration=5000000000 location=$FILE_PATH/$DAYANDTIME-%05d.mkv
-
-
-#---SRC---#
-#videotestsrc num-buffers=200
-#filesrc location=/home/nvidia/projectOWL/jetsonTX/videos/kittens.mkv
-#rtspsrc location=rtsp://root:hest1234@192.168.130.201/axis-media/media.amp latency=0 ntp-sync=true
-
-#---SINK---#
-#ximagesink (x11 video output sink based on xlib)
-#xvimagesink (gst BASE element)
-
-
-#gst-launch-1.0 rtspsrc location=rtsp://root:hest1234@192.168.130.201/axis-media/media.amp latency=0 ntp-sync=true ! rtph264depay ! h264parse ! omxh264dec ! videomixer name=mix sink_0::alpha=1 sink_1::alpha=0.5 ! omxh265enc ! matroskamux ! filesink location=out3.mkv rtspsrc location=rtsp://root:hest1234@192.168.130.200/axis-media/media.amp latency=0 ntp-sync=true ! rtph264depay ! h264parse ! omxh264dec ! mix.
 
 
 
