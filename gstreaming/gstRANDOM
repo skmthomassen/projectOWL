@@ -1,0 +1,118 @@
+
+#duration i nanosekunder: 5min=300000000000 - 3*e^11 || 1min=60000000000 - 6*e^10 || 30sec=30000000000 - 3*e^10 || 5sec=5000000000 - 5*e^9
+! multifilesink next-file=max-duration max-file-duration=5000000000 location=$FILE_PATH/$DAYANDTIME-%05d.mkv
+! queue max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+
+#---SRC---#
+videotestsrc num-buffers=200
+filesrc location=/home/nvidia/projectOWL/jetsonTX/videos/kittens.mkv
+rtspsrc location=rtsp://root:hest1234@192.168.130.201/axis-media/media.amp latency=0 ntp-sync=true
+
+#---SINK---#
+ximagesink (x11 video output sink based on xlib)
+xvimagesink (gst BASE element)
+
+#---OMXH265ENC---#
+iframeinterval --> Unsigned Integer. Range: 0 - 4294967295 Default: 0
+
+
+gst-launch-1.0 rtspsrc location=rtsp://root:hest1234@192.168.130.201/axis-media/media.amp
+  latency=0 ntp-sync=true
+  ! rtph264depay ! h264parse ! omxh264dec
+  ! videomixer name=mix sink_0::alpha=1 sink_1::alpha=0.5
+  ! omxh265enc ! matroskamux
+  ! filesink location=out3.mkv rtspsrc location=rtsp://root:hest1234@192.168.130.200/axis-media/media.amp latency=0 ntp-sync=true
+  ! rtph264depay ! h264parse ! omxh264dec ! mix.
+
+
+#---STACKING---#
+gst-launch -e \
+  videomixer name=mix \
+          sink_0::xpos=0   sink_0::ypos=0  sink_0::alpha=0\
+          sink_1::xpos=0   sink_1::ypos=0 \
+          sink_2::xpos=200 sink_2::ypos=0 \
+          sink_3::xpos=0   sink_3::ypos=100 \
+          sink_4::xpos=200 sink_4::ypos=100 \
+      ! xvimagesink \
+  videotestsrc pattern="black" \
+      ! video/x-raw-yuv,width=400,height=200 \
+      ! mix.sink_0 \
+  uridecodebin uri='file:///home/user/video/test1.mp4' \
+      ! ffmpegcolorspace ! videoscale \
+      ! video/x-raw-yuv,width=200,height=100 \
+      ! mix.sink_1 \
+  uridecodebin uri='file:///home/user/video/test2.mp4' \
+      ! ffmpegcolorspace ! videoscale \
+      ! video/x-raw-yuv,width=200,height=100 \
+      ! mix.sink_2 \
+  uridecodebin uri='file:///home/user/video/test.avi' \
+      ! ffmpegcolorspace ! videoscale \
+      ! video/x-raw-yuv,width=200,height=100 \
+      ! mix.sink_3 \
+  uridecodebin uri='mms://server/video/test.wmv' \
+      ! ffmpegcolorspace ! videoscale \
+      ! video/x-raw-yuv,width=200,height=100 \
+      ! mix.sink_4 \
+
+gst-launch-0.10
+  filesrc location=$VIDEO1
+  ! decodebin ! queue ! ffmpegcolorspace
+    ! videobox border-alpha=0 right=-$WIDTH
+  ! videomixer name=mix
+  ! ffmpegcolorspace
+  ! autovideosink filesrc location=$VIDEO2
+  ! decodebin ! queue ! ffmpegcolorspace
+    ! videobox border-alpha=0 left=-$WIDTH ! mix.
+
+
+gst-launch-1.0 -ev
+  videomixer name=mix
+    sink_0::xpos=0   sink_0::ypos=0  sink_0::alpha=1
+    sink_1::xpos=0   sink_1::ypos=200 sink1::alpha=0.5
+  ! x265enc ! h265parse ! matroskamux
+  ! filesink location=/home/kim/outtry.mkv sync=false
+filesrc location=twotracks.mkv
+  ! matroskademux name=mux
+mux.video_0
+  ! h265parse ! avdec_h265 ! mix.sink_0
+mux.video_1
+  ! h265parse ! avdec_h265 ! mix.sink_1
+
+
+gst-launch \
+   videomixer name=mix sink_1::xpos=20  sink_1::ypos=20  sink_1::alpha=0.5 sink_1::zorder=3
+                       sink_2::xpos=100 sink_2::ypos=100 sink_2::zorder=2 ! \
+   ffmpegcolorspace ! xvimagesink \
+   videotestsrc ! video/x-raw-yuv, framerate=10/1, width=640, height=360 ! mix.sink_0 \
+   videotestsrc pattern="snow" ! video/x-raw-yuv, framerate=10/1, width=200, height=150 ! mix.sink_1 \
+   videotestsrc pattern=13 ! video/x-raw-yuv, framerate=10/1, width=200, height=150 ! mix.sink_2
+
+GST_DEBUG=3 gst-launch-1.0 -e \
+videomixer name=mix \
+      sink_1::xpos=0 sink_1::ypos=2160 \
+      sink_2::xpos=0 sink_2::ypos=0 \
+  ! videoconvert ! xvimagesink \
+videotestsrc pattern=0 \
+  ! "video/x-raw,format=AYUV,width=3840,height=2160,framerate=(fraction)30/1" \
+  ! mix.sink_1 \
+videotestsrc pattern=1 \
+  ! "video/x-raw,format=AYUV,width=3840,height=2160,framerate=(fraction)30/1" \
+  ! mix.sink_2 \
+
+
+
+gst-launch-1.0 \
+souphttpsrc location="http://SOME_IP" ! tsdemux name=demuxer \
+    matroskamux name=muxer streamable=true ! tcpserversink host=MY_IP port=5000 \
+    demuxer ! queue ! mpegvideoparse \
+        ! mpeg2dec ! videoconvert \
+        ! omxh264enc ! video/x-h264,stream-format=byte-stream,profile=high ! h264parse ! muxer \
+    demuxer ! <...> ! mpegaudioparse ! <...> ! muxer
+
+ts.video_0_0102 !
+gst-launch-1.0 rtspsrc location=rtsp://192.168.1.184/live2.sdp \
+  ! queue ! rtph264depay ! h264parse ! mp4mux ! filesink location=result3.mp4
+
+
+  ! videoconvert ! x264enc ! h264parse ! mp4mux \
+  ! filesink location=$FILE_PATH/$DAYANDTIME.mp4 \
