@@ -20,36 +20,48 @@ mkdir -p $TODAY_DIR
 #camera network addresses
 URLA='rtsp://root:hest1234@192.168.130.200/axis-media/media.amp'
 URLB='rtsp://root:hest1234@192.168.130.201/axis-media/media.amp'
-RTSPSRC_SETTINGS='ntp-sync=true protocols=GST_RTSP_LOWER_TRANS_TCP'
+RTSPSRC_SETTINGS='ntp-sync=true protocols=GST_RTSP_LOWER_TRANS_TCP ntp-time-source=1'
 
 echo "Starting recoring: " $TODAY_DIR/$DAYANDTIME
 #3840 x 2160
 
 case $ARG in
+  -14)
+  gst-launch-1.0 -ev \
+    matroskamux name=mux ! filesink location=$TODAY_DIR/$DAYANDTIME-ntp1.mkv \
+    rtspsrc location=$URLA $RTSPSRC_SETTINGS \
+    ! queue ! capsfilter caps="application/x-rtp,media=video" \
+    ! rtph264depay ! h264parse ! mux.video_0 \
+    rtspsrc location=$URLB $RTSPSRC_SETTINGS  \
+    ! queue ! capsfilter caps="application/x-rtp,media=video" \
+    ! rtph264depay ! h264parse ! mux.video_1
+  ;;
   -13)
   #NOT working - extracts two videostreams from mp4 file, shows to screen
-  GST_DEBUG=3 gst-launch-1.0 -e \
+  GST_DEBUG=3 gst-launch-1.0 -ev \
     videomixer name=mix \
         sink_0::xpos=0 sink_0::ypos=0 \
         sink_1::xpos=0 sink_1::ypos=2160 \
         sink_2::xpos=0 sink_2::ypos=0 \
-    ! videoconvert ! xvimagesink \
+    ! videoconvert ! x264enc ! h264parse \
+    ! "video/x-h264,width=720,height=576,level=(string)5.2,profile=(string)high" ! mp4mux \
+    ! filesink location=$TODAY_DIR/$DAYANDTIME.mp4 \
     videotestsrc pattern=3 \
       ! "video/x-raw,format=AYUV,width=3840,height=4320,framerate=(fraction)30/1" \
       ! queue \
       ! mix.sink_0 \
-    filesrc location=$TODAY_DIR/20171129-085356-two-anna.mp4 \
+    filesrc location=$TODAY_DIR/20171129-133320-bea.mp4 \
       ! qtdemux name=demux \
       demux.video_0 \
-      ! h264parse ! decodebin ! multiqueue ! mix.sink_1 \
+      ! queue ! h264parse ! avdec_h264 ! mix.sink_1 \
       demux.video_1 \
-      ! h264parse ! decodebin ! multiqueue ! mix.sink_2
+      ! queue ! h264parse ! avdec_h264 ! mix.sink_2
 
   ffprobe -hide_banner $TODAY_DIR/$DAYANDTIME.mp4
   ;;
   -12)
   #NOT working - extracts two videostreams from mp4 file, saves to file
-  GST_DEBUG=4 gst-launch-1.0 -e \
+  GST_DEBUG=3 gst-launch-1.0 -e \
     videomixer name=mix \
         sink_0::xpos=0 sink_0::ypos=0 \
         sink_1::xpos=0 sink_1::ypos=2160 \
@@ -60,12 +72,12 @@ case $ARG in
       ! "video/x-raw,format=AYUV,width=3840,height=4320,framerate=(fraction)30/1" \
       ! queue \
       ! mix.sink_0 \
-    filesrc location=$TODAY_DIR/20171129-085356-two-anna.mp4 \
+    filesrc location=$TODAY_DIR/20171129-133320-bea.mp4 \
       ! qtdemux name=demux \
       demux.video_0 \
-      ! h264parse ! decodebin ! queue ! mix.sink_1 \
+      ! h264parse ! avdec_h264 ! multiqueue ! mix.sink_1 \
       demux.video_1 \
-      ! h264parse ! decodebin ! queue ! mix.sink_2
+      ! h264parse ! avdec_h264 ! multiqueue ! mix.sink_2
 
   ffprobe -hide_banner $TODAY_DIR/$DAYANDTIME.mp4
   ;;
@@ -81,7 +93,7 @@ case $ARG in
       ! "video/x-raw,format=AYUV,width=3840,height=4320,framerate=(fraction)30/1" \
       ! queue \
       ! mix.sink_0 \
-    filesrc location=$TODAY_DIR/20171129-085356-two-anna.mp4 \
+    filesrc location=$TODAY_DIR/20171129-121145-anna.mp4 \
       ! qtdemux name=demux \
       demux.video_0 \
       ! h264parse ! avdec_h264 ! queue ! mix.sink_1 \
@@ -89,7 +101,7 @@ case $ARG in
       ! h264parse ! avdec_h264 ! queue ! mix.sink_2
   ;;
   -10)
-  #working... - mixing two videostreams from mp4 files into splitview
+  #working... - mixing TWO videostreams from mp4 files into splitview
   GST_DEBUG=3 gst-launch-1.0 -e \
     videomixer name=mix \
         sink_0::xpos=0 sink_0::ypos=0 \
@@ -159,6 +171,18 @@ case $ARG in
     ! queue ! capsfilter caps="application/x-rtp,media=video" \
     ! rtph264depay ! h264parse ! mmux.video_1
   ;;
+  -62)
+  #works - saves 2rtspstreams into a mp4
+  GST_DEBUG=4 gst-launch-1.0 -e \
+    mp4mux name=mmux videoscale ! "video/x-raw,format=I420,width=640,height=340" \
+    ! filesink location=$TODAY_DIR/$DAYANDTIME-two.mp4 \
+    rtspsrc location=$URLA $RTSPSRC_SETTINGS \
+    ! queue ! capsfilter caps="application/x-rtp,media=video" \
+    ! rtph264depay ! h264parse ! mmux.video_0 \
+    rtspsrc location=$URLB $RTSPSRC_SETTINGS \
+    ! queue ! capsfilter caps="application/x-rtp,media=video" \
+    ! rtph264depay ! h264parse ! mmux.video_1
+  ;;
   -6)
   #works - saves 2rtspstreams into a mp4
   GST_DEBUG=3 gst-launch-1.0 -e \
@@ -168,12 +192,12 @@ case $ARG in
     ! rtph264depay ! h264parse ! mmux.video_0 \
     rtspsrc location=$URLB $RTSPSRC_SETTINGS \
     ! queue ! capsfilter caps="application/x-rtp,media=video" \
-    ! rtph264depay ! h264parse ! mmux.video_1 &
+    ! rtph264depay ! h264parse ! mmux.video_1
 
-    childPID=$!
-    echo "CHILD PID: " $childPID
-    sleep 60
-    kill $childPID
+    #childPID=$!
+    #echo "CHILD PID: " $childPID
+    #sleep 60
+    #kill $childPID
   ;;
   -5)
   #NOT working - extracts one/two videostreams from/into a h265 mp4 file
