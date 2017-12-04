@@ -1,0 +1,3 @@
+ # Mount Dendron NFS
+192.168.130.10:/volume1/storage /mnt/container nfs rw,rsize=8192,wsize=8192,timeo=14,_netdev,auto,nofail
+
