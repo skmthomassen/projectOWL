@@ -1,0 +1,8 @@
+
+pipeline = gst_parse_launch("matroskamux name=mux ! filesink location=trymefirst.mkv \
+rtspsrc location=URL_A RTSPSRC_SETTINGS \
+! queue ! capsfilter caps=\"application/x-rtp,media=video\" \
+! rtph264depay ! h264parse ! mux.video_0 \
+rtspsrc location=URL_B RTSPSRC_SETTINGS  \
+! queue ! capsfilter caps=\"application/x-rtp,media=video\" \
+! rtph264depay ! h264parse ! mux.video_1 &", &error);
