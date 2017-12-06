@@ -3,9 +3,13 @@
 /* Structure to contain all our information, so we can pass it to callbacks */
 typedef struct _CustomData {
   GstElement *pipeline;
-  GstElement *source;
-  GstElement *convert;
-  GstElement *sink;
+  GstElement *rtspsrc;
+  GstElement *matroskamux;
+  GstElement *rtph264depay;
+  GstElement *h264parse;
+  GstElement *queue;
+  GstElement *capsfilter;
+  GstElement *filesink;
 } CustomData;
 
 /* Handler for the pad-added signal */
@@ -22,14 +26,18 @@ int main(int argc, char *argv[]) {
   gst_init (&argc, &argv);
 
   /* Create the elements */
-  data.source = gst_element_factory_make ("uridecodebin", "source");
-  data.convert = gst_element_factory_make ("audioconvert", "convert");
-  data.sink = gst_element_factory_make ("autoaudiosink", "sink");
+  data.rtspsrc = gst_element_factory_make ("rtspsrc", "rtspsrc");
+  data.matroskamux = gst_element_factory_make ("matroskamux", "matroskamux");
+  data.rtph264depay = gst_element_factory_make ("rtph264depay", "rtph264depay");
+  data.h264parse = gst_element_factory_make ("h264parse", "h264parse");
+  data.capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
+  data.filesink = gst_element_factory_make ("filesink", "filesink");
 
   /* Create the empty pipeline */
   data.pipeline = gst_pipeline_new ("test-pipeline");
 
-  if (!data.pipeline || !data.source || !data.convert || !data.sink) {
+  if (!data.pipeline || !data.rtspsrc || !data.matroskamux || !data.rtph264depay \
+      !data.h264parse || !data.capsfilter || !data.filesink ) {
     g_printerr ("Not all elements could be created.\n");
     return -1;
   }
