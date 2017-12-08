@@ -86,11 +86,3 @@ case $ARG in
 		! filesink location=$FILE_PATH/$DAYANDTIME.mkv
 	;;
 esac
-
-
-
-
-
-
-
-

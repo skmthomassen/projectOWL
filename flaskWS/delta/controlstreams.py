@@ -39,7 +39,8 @@ def recording_time():
 
 #Starting the recording script, saves its PID to a file
 def start_recording():
-    cmdREC = subprocess.Popen(['sh', 'capturestreams.sh'], stdout=subprocess.PIPE, preexec_fn=os.setsid)
+    #cmdREC = subprocess.Popen(['sh', 'capturestreams.sh'], stdout=subprocess.PIPE, preexec_fn=os.setsid)
+    cmdREC
     try:
         cmdREC.wait(timeout=5)
     except:
